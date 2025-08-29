@@ -1,0 +1,21 @@
+{
+  "name": "js-modules-exploration",
+  "version": "1.0.0",
+  "description": "A comprehensive exploration of CommonJS and ES Modules",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "demo:commonjs": "node commonjs/demo.js",
+    "demo:esm": "node --experimental-modules esm/demo.mjs",
+    "demo:esm-native": "node esm/demo.js",
+    "demo:interop": "node interoperability/demo.js",
+    "demo:all": "npm run demo:commonjs && npm run demo:esm-native && npm run demo:interop",
+    "test": "node test/run-tests.js"
+  },
+  "keywords": ["commonjs", "esm", "modules", "javascript", "node"],
+  "author": "JS Modules Explorer",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
