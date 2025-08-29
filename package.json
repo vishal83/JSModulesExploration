@@ -15,6 +15,14 @@
   "keywords": ["commonjs", "esm", "modules", "javascript", "node"],
   "author": "JS Modules Explorer",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishal83/JSModulesExploration.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vishal83/JSModulesExploration/issues"
+  },
+  "homepage": "https://github.com/vishal83/JSModulesExploration#readme",
   "engines": {
     "node": ">=14.0.0"
   }
