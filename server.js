@@ -28,6 +28,7 @@ const routes = {
     '/browser': '/browser/index.html',
     '/esm-demo': '/browser/esm-demo.html',
     '/loading-demo': '/browser/loading-demo.html',
+    '/dynamic-demo': '/browser/dynamic-demo.html',
     '/interop-demo': '/browser/interop-demo.html'
 };
 
@@ -185,6 +186,7 @@ server.listen(PORT, () => {
    • Home Page:      http://localhost:${PORT}/
    • ES Modules:     http://localhost:${PORT}/esm-demo
    • Loading Demo:   http://localhost:${PORT}/loading-demo
+   • Dynamic Demo:   http://localhost:${PORT}/dynamic-demo
    • Browser Tests:  http://localhost:${PORT}/browser
 
 📁 File serving from: ${__dirname}
