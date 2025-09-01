@@ -736,10 +736,17 @@ Explore advanced dynamic import patterns!
                 });
                 
                 result += `\n💡 Performance Insights:\n`;
-                result += `• Parallel loading is ${(((sequentialEnd - sequentialStart) / (parallelEnd - parallelStart)) - 1) * 100).toFixed(0)}% faster\n`;
+                
+                // Calculate performance improvement safely
+                const sequentialTime = sequentialEnd - sequentialStart;
+                const parallelTime = parallelEnd - parallelStart;
+                const improvementPercent = parallelTime > 0 ? (((sequentialTime / parallelTime) - 1) * 100).toFixed(0) : 0;
+                const overheadTime = parallelTime.toFixed(0);
+                
+                result += `• Parallel loading is ${improvementPercent}% faster\n`;
                 result += `• Modules are cached after first load\n`;
                 result += `• HTTP/2 multiplexing helps parallel requests\n`;
-                result += `• Dynamic imports add ~${(parallelEnd - parallelStart).toFixed(0)}ms overhead`;
+                result += `• Dynamic imports add ~${overheadTime}ms overhead`;
                 
                 updateOutput('performance', result, 'success');
                 
