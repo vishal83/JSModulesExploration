@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug ES Modules</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 40px;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .output {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 20px;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .error {
+            color: #ff6b6b;
+            background: #2a1a1a;
+            border-color: #ff6b6b;
+        }
+        .success {
+            color: #4CAF50;
+            background: #1a2a1a;
+            border-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 ES Modules Debug Page</h1>
+    <p>This page helps debug ES module loading issues.</p>
+    
+    <button onclick="testBasicImport()">Test Basic Import</button>
+    <button onclick="testAllModules()">Test All Modules</button>
+    <button onclick="clearOutput()">Clear Output</button>
+    
+    <div id="output" class="output">Ready to test ES modules...</div>
+    
+    <script type="module">
+        console.log('🔧 Debug script starting...');
+        
+        // Test if the modules can be imported at all
+        let loadError = null;
+        let loadedModules = {};
+        
+        try {
+            console.log('📦 Attempting to import math-utils...');
+            const mathUtils = await import('/esm/math-utils.js');
+            loadedModules.math = mathUtils;
+            console.log('✅ math-utils loaded:', Object.keys(mathUtils));
+            
+            console.log('📦 Attempting to import user-service...');
+            const userService = await import('/esm/user-service.js');
+            loadedModules.user = userService;
+            console.log('✅ user-service loaded:', Object.keys(userService));
+            
+            console.log('📦 Attempting to import config...');
+            const config = await import('/esm/config.js');
+            loadedModules.config = config;
+            console.log('✅ config loaded:', Object.keys(config));
+            
+            // Update the output
+            document.getElementById('output').className = 'output success';
+            document.getElementById('output').textContent = `✅ All modules loaded successfully!
+
+Math Utils: ${Object.keys(loadedModules.math).join(', ')}
+User Service: ${Object.keys(loadedModules.user).join(', ')}
+Config: ${Object.keys(loadedModules.config).join(', ')}
+
+🧮 Testing math functions:
+  add(5, 3) = ${loadedModules.math.add(5, 3)}
+  PI = ${loadedModules.math.PI}
+
+👥 Testing user service:
+  Default export: ${loadedModules.user.default.name}
+  ROLES: ${Object.keys(loadedModules.user.ROLES).join(', ')}
+
+⚙️ Testing config:
+  Environment: ${loadedModules.config.config.environment}
+  Version: ${loadedModules.config.getVersion()}
+
+✅ All imports successful! The modules are working correctly.`;
+            
+        } catch (error) {
+            console.error('❌ Module loading failed:', error);
+            loadError = error;
+            
+            document.getElementById('output').className = 'output error';
+            document.getElementById('output').textContent = `❌ Module loading failed!
+
+Error: ${error.message}
+Stack: ${error.stack}
+
+🔍 Debugging info:
+- Check the browser console for more details
+- Verify the server is running on port 3000
+- Check Network tab for failed requests
+- Look for CORS errors`;
+        }
+        
+        // Make test functions available globally
+        window.testBasicImport = async function() {
+            const output = document.getElementById('output');
+            output.className = 'output';
+            output.textContent = 'Testing basic import...';
+            
+            try {
+                const mathModule = await import('/esm/math-utils.js');
+                const result = mathModule.add(10, 20);
+                
+                output.className = 'output success';
+                output.textContent = `✅ Basic import test successful!
+
+Imported: math-utils.js
+Test: add(10, 20) = ${result}
+Available exports: ${Object.keys(mathModule).join(', ')}
+
+Import URL: ${import.meta.url}
+Base URL: ${window.location.origin}`;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Basic import test failed!
+
+Error: ${error.name}: ${error.message}
+
+Debugging steps:
+1. Open browser console (F12)
+2. Check Network tab for failed requests
+3. Look for CORS policy errors
+4. Verify server is running`;
+                
+                console.error('Import test failed:', error);
+            }
+        };
+        
+        window.testAllModules = function() {
+            const output = document.getElementById('output');
+            
+            if (loadError) {
+                output.className = 'output error';
+                output.textContent = `❌ Initial module loading failed: ${loadError.message}`;
+                return;
+            }
+            
+            try {
+                // Test math functions
+                const mathTest = loadedModules.math.add(15, 25);
+                const calc = new loadedModules.math.Calculator('Test Calculator');
+                const calcTest = calc.calculate('multiply', 6, 7);
+                
+                // Test user service
+                const userService = new loadedModules.user.default();
+                const users = userService.getAllUsers();
+                
+                // Test config
+                const environment = loadedModules.config.config.environment;
+                const version = loadedModules.config.getVersion();
+                
+                output.className = 'output success';
+                output.textContent = `✅ All module tests passed!
+
+🧮 Math Tests:
+  add(15, 25) = ${mathTest}
+  Calculator: ${calc.name}
+  multiply(6, 7) = ${calcTest}
+
+👥 User Service Tests:
+  Users count: ${users.length}
+  Sample user: ${users[0].name}
+  Email validation: ${loadedModules.user.validateEmail('test@example.com')}
+
+⚙️ Config Tests:
+  Environment: ${environment}
+  Version: ${version}
+  Is dev: ${loadedModules.config.isDevelopment()}
+
+🌐 Browser Info:
+  User Agent: ${navigator.userAgent.split(' ').slice(-2).join(' ')}
+  Module support: ✅ Native ES modules working`;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Module test failed: ${error.message}`;
+                console.error('Module test failed:', error);
+            }
+        };
+        
+        window.clearOutput = function() {
+            document.getElementById('output').className = 'output';
+            document.getElementById('output').textContent = 'Ready to test ES modules...';
+        };
+        
+        console.log('🔧 Debug script initialized. Modules loaded:', Object.keys(loadedModules));
+    </script>
+</body>
+</html>

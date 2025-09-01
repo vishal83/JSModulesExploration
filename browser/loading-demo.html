@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Module Loading Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: #0d1117;
+            color: #e6edf3;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #1f2937, #374151);
+            border-radius: 12px;
+            border: 1px solid #374151;
+        }
+        
+        .header h1 {
+            color: #fbbf24;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .nav {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .nav a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 12px 24px;
+            background: #1f2937;
+            color: #e6edf3;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #374151;
+            transition: all 0.3s;
+        }
+        
+        .nav a:hover {
+            background: #374151;
+            border-color: #4b5563;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .demo-section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .demo-section h2 {
+            color: #58a6ff;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .loading-indicator {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #30363d;
+            border-top: 2px solid #58a6ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .timeline {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            position: relative;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to bottom, #0d1117, transparent);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .timeline.browser {
+            border-left: 4px solid #22c55e;
+        }
+        
+        .timeline.comparison {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #2ea043, #238636);
+            transform: translateY(-1px);
+        }
+        
+        button:disabled {
+            background: #6e7681;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button.secondary {
+            background: linear-gradient(135deg, #6e7681, #7d8590);
+        }
+        
+        button.secondary:hover {
+            background: linear-gradient(135deg, #7d8590, #8b949e);
+        }
+        
+        .info-box {
+            background: #0969da;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #2188ff;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .comparison-box {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .comparison-item {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+        
+        .comparison-item.browser {
+            border-left-color: #22c55e;
+        }
+        
+        .comparison-item.nodejs {
+            border-left-color: #f59e0b;
+        }
+        
+        .comparison-item h4 {
+            margin-bottom: 10px;
+            color: #58a6ff;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status.loaded {
+            background: #1a472a;
+            color: #7ce38b;
+        }
+        
+        .status.loading {
+            background: #7c2d12;
+            color: #fed7aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Module Loading Behavior Demo</h1>
+            <p>Compare how modules load in browsers vs Node.js - see the difference in real-time!</p>
+        </div>
+        
+        <div class="nav">
+            <a href="/">🏠 Home</a>
+            <a href="/esm-demo">📦 ES Modules</a>
+            <a href="/dynamic-demo">🔄 Dynamic Imports</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank">📚 GitHub</a>
+        </div>
+        
+        <div class="demo-grid">
+            <div class="demo-section">
+                <h2>
+                    🌐 Browser Loading (ES Modules)
+                    <span id="browser-status" class="status loading">
+                        <div class="loading-indicator"></div>
+                        Loading
+                    </span>
+                </h2>
+                
+                <div class="info-box">
+                    <h3>How Browser Loading Works:</h3>
+                    <ul>
+                        <li>📋 Parse HTML and find &lt;script type="module"&gt;</li>
+                        <li>🔍 Parse JavaScript, find import statements</li>
+                        <li>⚡ Fetch all modules in parallel (hoisted)</li>
+                        <li>⏳ Wait for all imports to resolve</li>
+                        <li>🚀 Execute script code</li>
+                    </ul>
+                </div>
+                
+                <button onclick="simulateBrowserLoading()">Simulate Loading</button>
+                <button onclick="clearBrowserLog()" class="secondary">Clear Log</button>
+                
+                <div id="browser-timeline" class="timeline browser">
+🌐 Browser ES Module Loading Timeline:
+
+Waiting for simulation...
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>🟢 Node.js Comparison</h2>
+                
+                <div class="info-box">
+                    <h3>How Node.js Loading Works:</h3>
+                    <ul>
+                        <li>📝 Execute code line by line</li>
+                        <li>🔄 Hit require() → pause execution</li>
+                        <li>📥 Load module synchronously</li>
+                        <li>✅ Continue execution</li>
+                        <li>🏁 Complete</li>
+                    </ul>
+                </div>
+                
+                <button onclick="simulateNodeJSLoading()">Simulate Node.js</button>
+                <button onclick="clearNodeLog()" class="secondary">Clear Log</button>
+                
+                <div id="nodejs-timeline" class="timeline">
+🟢 Node.js CommonJS Loading Timeline:
+
+Waiting for simulation...
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-box">
+            <h2 style="color: #58a6ff; margin-bottom: 20px;">📊 Side-by-Side Comparison</h2>
+            
+            <button onclick="runComparison()">Run Side-by-Side Comparison</button>
+            <button onclick="clearComparison()" class="secondary">Clear</button>
+            
+            <div class="comparison-grid">
+                <div class="comparison-item browser">
+                    <h4>🌐 Browser (ES Modules)</h4>
+                    <div id="browser-comparison" class="timeline">
+Click "Run Comparison" to see both loading patterns simultaneously!
+                    </div>
+                </div>
+                
+                <div class="comparison-item nodejs">
+                    <h4>🟢 Node.js (CommonJS)</h4>
+                    <div id="nodejs-comparison" class="timeline">
+Click "Run Comparison" to see both loading patterns simultaneously!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section" style="margin-top: 30px;">
+            <h2>🔍 Real Module Loading Analysis</h2>
+            <p>This page itself demonstrates ES module loading! Check your browser's Developer Tools:</p>
+            
+            <div class="info-box">
+                <h3>🛠️ Developer Tools Analysis:</h3>
+                <ol>
+                    <li><strong>Network Tab:</strong> See how modules are fetched</li>
+                    <li><strong>Console:</strong> View loading order and timing</li>
+                    <li><strong>Sources Tab:</strong> Examine module dependencies</li>
+                    <li><strong>Performance Tab:</strong> Analyze loading performance</li>
+                </ol>
+            </div>
+            
+            <button onclick="analyzeCurrentPage()">Analyze This Page</button>
+            <button onclick="showNetworkTips()">Network Tips</button>
+            
+            <div id="analysis-output" class="timeline comparison">
+Click "Analyze This Page" to examine how this very page loaded its modules!
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // This script demonstrates real ES module loading in the browser!
+        console.time('Total ES Module Loading');
+        console.log('🌐 [Browser] Starting ES module loading...');
+        
+        // These imports are hoisted and loaded in parallel
+        import { add, multiply, Calculator } from '/esm/math-utils.js';
+        import { config, isProduction } from '/esm/config.js';
+        
+        console.log('🌐 [Browser] All imports resolved, executing script...');
+        console.timeEnd('Total ES Module Loading');
+        
+        // Update status
+        document.getElementById('browser-status').innerHTML = `
+            <span style="background: #1a472a; color: #7ce38b; padding: 2px 6px; border-radius: 3px;">
+                ✅ Loaded
+            </span>
+        `;
+        
+        // Simulation functions
+        window.simulateBrowserLoading = function() {
+            const timeline = document.getElementById('browser-timeline');
+            timeline.innerHTML = '🌐 Browser ES Module Loading Timeline:\n\n';
+            
+            let step = 0;
+            const steps = [
+                '⏰ 0ms    - HTML parsing begins',
+                '⏰ 2ms    - Found <script type="module">',
+                '⏰ 3ms    - Parsing JavaScript, finding imports...',
+                '⏰ 5ms    - 🔍 Found import statements (hoisted!)',
+                '⏰ 6ms    - 📡 Fetching /esm/math-utils.js',
+                '⏰ 7ms    - 📡 Fetching /esm/config.js', 
+                '⏰ 8ms    - 📡 Fetching /esm/user-service.js',
+                '⏰ 12ms   - ⚡ All modules fetching in parallel...',
+                '⏰ 45ms   - ✅ math-utils.js loaded',
+                '⏰ 52ms   - ✅ config.js loaded',
+                '⏰ 58ms   - ✅ user-service.js loaded',
+                '⏰ 60ms   - 🔗 Resolving module dependencies...',
+                '⏰ 62ms   - 🚀 All imports resolved, executing script!',
+                '⏰ 65ms   - 📝 console.log("Script execution starts")',
+                '⏰ 68ms   - 🧮 Using imported add(5, 10) = 15',
+                '⏰ 70ms   - ✅ Script execution complete!',
+                '',
+                '🔑 Key Points:',
+                '• All imports are hoisted (processed first)',
+                '• Modules load in parallel, not sequentially', 
+                '• Script execution waits for ALL imports',
+                '• No blocking during loading phase'
+            ];
+            
+            const interval = setInterval(() => {
+                if (step < steps.length) {
+                    timeline.innerHTML += steps[step] + '\n';
+                    timeline.scrollTop = timeline.scrollHeight;
+                    step++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+        };
+        
+        window.simulateNodeJSLoading = function() {
+            const timeline = document.getElementById('nodejs-timeline');
+            timeline.innerHTML = '🟢 Node.js CommonJS Loading Timeline:\n\n';
+            
+            let step = 0;
+            const steps = [
+                '⏰ 0ms    - Node.js script execution begins',
+                '⏰ 1ms    - 📝 console.log("Script started")',
+                '⏰ 2ms    - 🔍 Encountered require("./math-utils")',
+                '⏰ 3ms    - ⏸️  EXECUTION PAUSED (blocking)',
+                '⏰ 4ms    - 📥 Loading math-utils.js...',
+                '⏰ 25ms   - 🔄 Executing math-utils.js code...',
+                '⏰ 30ms   - ✅ math-utils.js loaded and cached',
+                '⏰ 31ms   - ▶️  EXECUTION RESUMED',
+                '⏰ 32ms   - 📝 console.log("Math module loaded")',
+                '⏰ 33ms   - 🔍 Encountered require("./config")',
+                '⏰ 34ms   - ⏸️  EXECUTION PAUSED again',
+                '⏰ 35ms   - 📥 Loading config.js...',
+                '⏰ 55ms   - 🔄 Executing config.js code...',
+                '⏰ 58ms   - ✅ config.js loaded and cached',
+                '⏰ 59ms   - ▶️  EXECUTION RESUMED',
+                '⏰ 60ms   - 🧮 Using add(5, 10) = 15',
+                '⏰ 61ms   - ✅ Script execution complete!',
+                '',
+                '🔑 Key Points:',
+                '• Synchronous, blocking execution',
+                '• Modules load one at a time (sequential)',
+                '• Each require() pauses execution',
+                '• Code runs line by line'
+            ];
+            
+            const interval = setInterval(() => {
+                if (step < steps.length) {
+                    timeline.innerHTML += steps[step] + '\n';
+                    timeline.scrollTop = timeline.scrollHeight;
+                    step++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+        };
+        
+        window.runComparison = function() {
+            const browserComp = document.getElementById('browser-comparison');
+            const nodejsComp = document.getElementById('nodejs-comparison');
+            
+            browserComp.innerHTML = '🌐 Browser:\n⏰ Starting...\n';
+            nodejsComp.innerHTML = '🟢 Node.js:\n⏰ Starting...\n';
+            
+            // Browser simulation
+            const browserSteps = [
+                '⏰ 0ms - Parse & hoist imports',
+                '⏰ 5ms - Fetch modules in parallel',
+                '⏰ 50ms - All modules loaded',
+                '⏰ 52ms - Execute script',
+                '✅ Complete (non-blocking)'
+            ];
+            
+            // Node.js simulation
+            const nodejsSteps = [
+                '⏰ 0ms - Start execution',
+                '⏰ 2ms - Hit require() - BLOCK',
+                '⏰ 30ms - Module loaded - RESUME',
+                '⏰ 32ms - Hit require() - BLOCK',
+                '⏰ 60ms - Module loaded - RESUME',
+                '✅ Complete (blocking)'
+            ];
+            
+            let step = 0;
+            const interval = setInterval(() => {
+                if (step < Math.max(browserSteps.length, nodejsSteps.length)) {
+                    if (step < browserSteps.length) {
+                        browserComp.innerHTML += browserSteps[step] + '\n';
+                    }
+                    if (step < nodejsSteps.length) {
+                        nodejsComp.innerHTML += nodejsSteps[step] + '\n';
+                    }
+                    step++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 800);
+        };
+        
+        window.analyzeCurrentPage = function() {
+            const output = document.getElementById('analysis-output');
+            const perfEntries = performance.getEntriesByType('navigation');
+            const resourceEntries = performance.getEntriesByType('resource');
+            
+            let analysis = `🔍 Real Page Loading Analysis:\n\n`;
+            
+            // Navigation timing
+            if (perfEntries.length > 0) {
+                const nav = perfEntries[0];
+                analysis += `📊 Navigation Timing:\n`;
+                analysis += `  • DNS Lookup: ${(nav.domainLookupEnd - nav.domainLookupStart).toFixed(2)}ms\n`;
+                analysis += `  • TCP Connect: ${(nav.connectEnd - nav.connectStart).toFixed(2)}ms\n`;
+                analysis += `  • Request: ${(nav.responseStart - nav.requestStart).toFixed(2)}ms\n`;
+                analysis += `  • Response: ${(nav.responseEnd - nav.responseStart).toFixed(2)}ms\n`;
+                analysis += `  • DOM Content Loaded: ${(nav.domContentLoadedEventEnd - nav.navigationStart).toFixed(2)}ms\n`;
+                analysis += `  • Page Load Complete: ${(nav.loadEventEnd - nav.navigationStart).toFixed(2)}ms\n\n`;
+            }
+            
+            // Resource timing (modules)
+            const moduleResources = resourceEntries.filter(r => r.name.includes('.js') || r.name.includes('.mjs'));
+            if (moduleResources.length > 0) {
+                analysis += `📦 Module Loading:\n`;
+                moduleResources.forEach(resource => {
+                    const filename = resource.name.split('/').pop();
+                    analysis += `  • ${filename}: ${resource.duration.toFixed(2)}ms\n`;
+                });
+                analysis += `\n`;
+            }
+            
+            // Import meta info
+            analysis += `🌐 Module Information:\n`;
+            analysis += `  • Current module URL: ${import.meta.url}\n`;
+            analysis += `  • Module type: ES Module (native browser support)\n`;
+            analysis += `  • Import hoisting: ✅ Active\n`;
+            analysis += `  • Parallel loading: ✅ Active\n\n`;
+            
+            // Browser capabilities
+            analysis += `🚀 Browser Capabilities:\n`;
+            analysis += `  • ES Modules: ${'noModule' in HTMLScriptElement.prototype ? '✅' : '❌'}\n`;
+            analysis += `  • Dynamic import(): ${typeof import === 'function' ? '✅' : '❌'}\n`;
+            analysis += `  • Top-level await: ✅ (in modules)\n`;
+            analysis += `  • HTTP/2: ${window.location.protocol === 'https:' ? '✅ Likely' : '❓ Unknown'}\n`;
+            
+            output.innerHTML = analysis;
+            output.scrollTop = 0;
+        };
+        
+        window.showNetworkTips = function() {
+            const output = document.getElementById('analysis-output');
+            output.innerHTML = `🛠️ Browser Developer Tools Tips:
+
+📊 Network Tab Analysis:
+  1. Open Dev Tools (F12) → Network Tab
+  2. Reload page and watch module loading
+  3. Look for:
+     • Parallel requests for .js/.mjs files
+     • "type: module" in request headers
+     • CORS headers for cross-origin modules
+     • Cache behavior (304 vs 200 status)
+
+🔍 What to Notice:
+  • ES modules load in parallel (multiple requests at once)
+  • Each import creates a separate network request
+  • Browser automatically handles dependency resolution
+  • Modules are cached after first load
+
+⚡ Performance Insights:
+  • Module loading happens during HTML parsing
+  • No JavaScript execution blocking
+  • HTTP/2 multiplexing helps with parallel requests
+  • Tree shaking possible with proper bundlers
+
+🎯 Console Commands to Try:
+  performance.getEntriesByType('resource')
+  performance.getEntriesByType('navigation')
+  console.log(import.meta.url)
+  
+🌐 Module-specific in Network tab:
+  • Filter by "JS" to see only JavaScript files
+  • Check "Initiator" column for import chains
+  • "Size" column shows actual vs compressed size`;
+        };
+        
+        // Clear functions
+        window.clearBrowserLog = () => {
+            document.getElementById('browser-timeline').innerHTML = '🌐 Browser ES Module Loading Timeline:\n\nWaiting for simulation...';
+        };
+        
+        window.clearNodeLog = () => {
+            document.getElementById('nodejs-timeline').innerHTML = '🟢 Node.js CommonJS Loading Timeline:\n\nWaiting for simulation...';
+        };
+        
+        window.clearComparison = () => {
+            document.getElementById('browser-comparison').innerHTML = 'Click "Run Comparison" to see both loading patterns simultaneously!';
+            document.getElementById('nodejs-comparison').innerHTML = 'Click "Run Comparison" to see both loading patterns simultaneously!';
+        };
+        
+        console.log('⚡ Loading demo initialized with real ES modules!');
+        console.log('📦 Imported functions working:', { 
+            add: add(2, 3), 
+            multiply: multiply(4, 5),
+            environment: config.environment 
+        });
+    </script>
+</body>
+</html>
