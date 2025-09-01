@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Demo Debug</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            background: #1a1a1a; 
+            color: white; 
+            padding: 20px; 
+        }
+        .output { 
+            background: #2a2a2a; 
+            padding: 20px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            white-space: pre-wrap;
+        }
+        .error { border-left: 4px solid #ff6b6b; }
+        .success { border-left: 4px solid #4CAF50; }
+        button { 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 10px 5px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Loading Demo Debug</h1>
+    <p>Testing if the loading demo functions can be loaded...</p>
+    
+    <button onclick="testImports()">Test Imports</button>
+    <button onclick="testFunctions()">Test Functions</button>
+    <button onclick="location.reload()">Reload Page</button>
+    
+    <div id="output" class="output">Ready to test...</div>
+    
+    <script type="module">
+        let importSuccess = false;
+        let functionsDefined = false;
+        
+        console.log('🔧 Loading debug starting...');
+        
+        try {
+            console.log('📦 Testing imports...');
+            
+            // Test the same imports as loading-demo.html
+            const { add, multiply, Calculator } = await import('/esm/math-utils.js');
+            const { config, isProduction } = await import('/esm/config.js');
+            
+            console.log('✅ Imports successful!');
+            importSuccess = true;
+            
+            // Test that functions work
+            const testAdd = add(5, 10);
+            const testEnv = config.environment;
+            
+            document.getElementById('output').className = 'output success';
+            document.getElementById('output').textContent = `✅ Import Test Successful!
+
+Math Utils Import: ✅
+  add(5, 10) = ${testAdd}
+
+Config Import: ✅  
+  Environment: ${testEnv}
+  Is Production: ${isProduction()}
+
+🎯 The imports are working! If loading-demo buttons don't work:
+1. Clear browser cache (Ctrl+Shift+Delete)
+2. Hard refresh (Ctrl+F5 or Cmd+Shift+R)
+3. Check browser console for errors
+
+Time to test: ${Date.now()}`;
+            
+        } catch (error) {
+            console.error('❌ Import failed:', error);
+            importSuccess = false;
+            
+            document.getElementById('output').className = 'output error';
+            document.getElementById('output').textContent = `❌ Import Test Failed!
+
+Error: ${error.message}
+Stack: ${error.stack}
+
+This means the same issue exists in loading-demo.html!
+
+🔧 Next steps:
+1. Check if config.js was properly updated
+2. Restart the server
+3. Clear browser cache`;
+        }
+        
+        // Test if we can define the same functions as loading-demo
+        try {
+            window.testSimulation = function() {
+                console.log('🧪 Test simulation function works!');
+                return 'Function defined and callable!';
+            };
+            functionsDefined = true;
+        } catch (error) {
+            console.error('Function definition failed:', error);
+        }
+        
+        // Global test functions
+        window.testImports = function() {
+            const output = document.getElementById('output');
+            output.className = importSuccess ? 'output success' : 'output error';
+            output.textContent = importSuccess 
+                ? '✅ Imports are working! The loading demo should work now.'
+                : '❌ Imports still failing. Check console for details.';
+        };
+        
+        window.testFunctions = function() {
+            const output = document.getElementById('output');
+            const canDefine = functionsDefined;
+            const testFunc = typeof window.testSimulation === 'function';
+            
+            output.className = (canDefine && testFunc) ? 'output success' : 'output error';
+            output.textContent = `Function Definition Test:
+
+Can define functions: ${canDefine ? '✅' : '❌'}
+Test function exists: ${testFunc ? '✅' : '❌'}
+Test function result: ${testFunc ? window.testSimulation() : 'N/A'}
+
+${(canDefine && testFunc) 
+    ? '✅ Functions can be defined! Loading demo should work.' 
+    : '❌ Function definition issues detected.'}`;
+        };
+        
+        console.log('🔧 Debug initialized. Import success:', importSuccess);
+    </script>
+</body>
+</html>
