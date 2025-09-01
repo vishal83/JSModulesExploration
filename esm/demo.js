@@ -121,7 +121,7 @@ async function dynamicImportDemo() {
         console.log('Dynamic destructured import:', dynamicSubtract(100, 30));
         
         // Conditional dynamic import
-        if (process.env.NODE_ENV !== 'production') {
+        if (typeof process === 'undefined' || process.env?.NODE_ENV !== 'production') {
             const configModule = await import('./config.js');
             console.log('Conditionally loaded config version:', configModule.getVersion());
         }

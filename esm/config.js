@@ -1,8 +1,12 @@
 // ES Modules Configuration
 // Demonstrates various export patterns and module organization
 
-// Environment setup
-const environment = process.env.NODE_ENV || 'development';
+// Environment setup - browser compatible
+// Note: 'process' is a Node.js global that doesn't exist in browsers
+// We check if it exists before trying to use it
+const environment = (typeof process !== 'undefined' && process.env) 
+    ? process.env.NODE_ENV || 'development'  // Node.js environment
+    : 'browser';  // Browser environment
 
 // Private constants (not exported)
 const secretKey = 'esm-super-secret-key-456';
@@ -11,10 +15,16 @@ const version = '2.0.0';
 // Configuration object
 const config = {
     environment,
-    port: process.env.PORT || 3000,
+    port: (typeof process !== 'undefined' && process.env) 
+        ? process.env.PORT || 3000 
+        : 3000,
     database: {
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT) || 5432,
+        host: (typeof process !== 'undefined' && process.env) 
+            ? process.env.DB_HOST || 'localhost' 
+            : 'localhost',
+        port: (typeof process !== 'undefined' && process.env) 
+            ? parseInt(process.env.DB_PORT) || 5432 
+            : 5432,
         name: `myapp_esm_${environment}`,
         ssl: environment === 'production',
         maxConnections: environment === 'production' ? 20 : 5
