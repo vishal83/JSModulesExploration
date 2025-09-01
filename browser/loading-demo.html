@@ -540,10 +540,20 @@ Click "Analyze This Page" to examine how this very page loaded its modules!
             
             // Browser capabilities
             analysis += `🚀 Browser Capabilities:\n`;
-            analysis += `  • ES Modules: ${'noModule' in HTMLScriptElement.prototype ? '✅' : '❌'}\n`;
-            analysis += `  • Dynamic import(): ${typeof import === 'function' ? '✅' : '❌'}\n`;
+            
+            // Check ES Modules support
+            const hasESModules = 'noModule' in HTMLScriptElement.prototype;
+            analysis += `  • ES Modules: ${hasESModules ? '✅' : '❌'}\n`;
+            
+            // Check dynamic import support
+            const hasDynamicImport = true; // We're using it successfully here
+            analysis += `  • Dynamic import(): ${hasDynamicImport ? '✅' : '❌'}\n`;
+            
             analysis += `  • Top-level await: ✅ (in modules)\n`;
-            analysis += `  • HTTP/2: ${window.location.protocol === 'https:' ? '✅ Likely' : '❓ Unknown'}\n`;
+            
+            // Check HTTP/2
+            const isHTTPS = window.location.protocol === 'https:';
+            analysis += `  • HTTP/2: ${isHTTPS ? '✅ Likely' : '❓ Unknown'}\n`;
             
             output.innerHTML = analysis;
             output.scrollTop = 0;
