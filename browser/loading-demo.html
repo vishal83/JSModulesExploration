@@ -4,64 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ Module Loading Demo</title>
+    <link rel="stylesheet" href="/browser/css/design-system.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
-            background: #0d1117;
-            color: #e6edf3;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 25px;
-            background: linear-gradient(135deg, #1f2937, #374151);
-            border-radius: 12px;
-            border: 1px solid #374151;
-        }
-        
-        .header h1 {
-            color: #fbbf24;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .nav {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .nav a {
-            display: inline-block;
-            margin: 0 10px;
-            padding: 12px 24px;
-            background: #1f2937;
-            color: #e6edf3;
-            text-decoration: none;
-            border-radius: 6px;
-            border: 1px solid #374151;
-            transition: all 0.3s;
-        }
-        
-        .nav a:hover {
-            background: #374151;
-            border-color: #4b5563;
-        }
-        
+        /* Additional styles for loading demo specific features */
         .demo-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
         }
         
         @media (max-width: 768px) {
@@ -70,173 +20,61 @@
             }
         }
         
-        .demo-section {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 25px;
-            position: relative;
-        }
-        
-        .demo-section h2 {
-            color: #58a6ff;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .loading-indicator {
-            width: 12px;
-            height: 12px;
-            border: 2px solid #30363d;
-            border-top: 2px solid #58a6ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
         .timeline {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 20px;
-            margin: 15px 0;
-            font-family: 'SF Mono', 'Monaco', monospace;
-            font-size: 13px;
-            line-height: 1.4;
+            background: var(--bg-glass-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            line-height: 1.5;
             white-space: pre-wrap;
-            position: relative;
             max-height: 400px;
             overflow-y: auto;
-        }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(to bottom, #0d1117, transparent);
-            pointer-events: none;
-            z-index: 1;
+            color: var(--text-inverse);
         }
         
         .timeline.browser {
-            border-left: 4px solid #22c55e;
+            border-left: 4px solid var(--accent-green);
         }
         
-        .timeline.comparison {
-            border-left: 4px solid #f59e0b;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #238636, #2ea043);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            margin-right: 15px;
-            margin-bottom: 10px;
-            transition: all 0.3s;
-        }
-        
-        button:hover {
-            background: linear-gradient(135deg, #2ea043, #238636);
-            transform: translateY(-1px);
-        }
-        
-        button:disabled {
-            background: #6e7681;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        button.secondary {
-            background: linear-gradient(135deg, #6e7681, #7d8590);
-        }
-        
-        button.secondary:hover {
-            background: linear-gradient(135deg, #7d8590, #8b949e);
-        }
-        
-        .info-box {
-            background: #0969da;
-            color: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
-            border-left: 4px solid #2188ff;
-        }
-        
-        .info-box h3 {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        
-        .comparison-box {
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+        .timeline.nodejs {
+            border-left: 4px solid var(--accent-orange);
         }
         
         .comparison-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 15px;
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         .comparison-item {
-            background: #0d1117;
-            padding: 15px;
-            border-radius: 6px;
+            background: var(--bg-glass);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
             border-left: 4px solid;
         }
         
         .comparison-item.browser {
-            border-left-color: #22c55e;
+            border-left-color: var(--accent-green);
         }
         
         .comparison-item.nodejs {
-            border-left-color: #f59e0b;
+            border-left-color: var(--accent-orange);
         }
         
         .comparison-item h4 {
-            margin-bottom: 10px;
-            color: #58a6ff;
-        }
-        
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
+            margin-bottom: var(--space-md);
+            color: var(--text-inverse);
             font-weight: 600;
-        }
-        
-        .status.loaded {
-            background: #1a472a;
-            color: #7ce38b;
-        }
-        
-        .status.loading {
-            background: #7c2d12;
-            color: #fed7aa;
         }
     </style>
 </head>
@@ -247,19 +85,19 @@
             <p>Compare how modules load in browsers vs Node.js - see the difference in real-time!</p>
         </div>
         
-        <div class="nav">
-            <a href="/">🏠 Home</a>
-            <a href="/esm-demo">📦 ES Modules</a>
-            <a href="/dynamic-demo">🔄 Dynamic Imports</a>
-            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank">📚 GitHub</a>
-        </div>
+        <nav class="nav">
+            <a href="/" class="nav-link">🏠 Home</a>
+            <a href="/esm-demo" class="nav-link">📦 ES Modules</a>
+            <a href="/dynamic-demo" class="nav-link">🔄 Dynamic Imports</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank" class="nav-link">📚 GitHub</a>
+        </nav>
         
         <div class="demo-grid">
             <div class="demo-section">
                 <h2>
                     🌐 Browser Loading (ES Modules)
                     <span id="browser-status" class="status loading">
-                        <div class="loading-indicator"></div>
+                        <div class="loading-spinner"></div>
                         Loading
                     </span>
                 </h2>
@@ -275,8 +113,8 @@
                     </ul>
                 </div>
                 
-                <button onclick="simulateBrowserLoading()">Simulate Loading</button>
-                <button onclick="clearBrowserLog()" class="secondary">Clear Log</button>
+                <button onclick="simulateBrowserLoading()" class="btn btn-success">Simulate Loading</button>
+                <button onclick="clearBrowserLog()" class="btn btn-secondary">Clear Log</button>
                 
                 <div id="browser-timeline" class="timeline browser">
 🌐 Browser ES Module Loading Timeline:
@@ -299,10 +137,10 @@ Waiting for simulation...
                     </ul>
                 </div>
                 
-                <button onclick="simulateNodeJSLoading()">Simulate Node.js</button>
-                <button onclick="clearNodeLog()" class="secondary">Clear Log</button>
+                <button onclick="simulateNodeJSLoading()" class="btn btn-success">Simulate Node.js</button>
+                <button onclick="clearNodeLog()" class="btn btn-secondary">Clear Log</button>
                 
-                <div id="nodejs-timeline" class="timeline">
+                <div id="nodejs-timeline" class="timeline nodejs">
 🟢 Node.js CommonJS Loading Timeline:
 
 Waiting for simulation...
@@ -310,11 +148,11 @@ Waiting for simulation...
             </div>
         </div>
         
-        <div class="comparison-box">
-            <h2 style="color: #58a6ff; margin-bottom: 20px;">📊 Side-by-Side Comparison</h2>
+        <div class="demo-section">
+            <h2>📊 Side-by-Side Comparison</h2>
             
-            <button onclick="runComparison()">Run Side-by-Side Comparison</button>
-            <button onclick="clearComparison()" class="secondary">Clear</button>
+            <button onclick="runComparison()" class="btn btn-primary">Run Side-by-Side Comparison</button>
+            <button onclick="clearComparison()" class="btn btn-secondary">Clear</button>
             
             <div class="comparison-grid">
                 <div class="comparison-item browser">
@@ -333,7 +171,7 @@ Click "Run Comparison" to see both loading patterns simultaneously!
             </div>
         </div>
         
-        <div class="demo-section" style="margin-top: 30px;">
+        <div class="demo-section">
             <h2>🔍 Real Module Loading Analysis</h2>
             <p>This page itself demonstrates ES module loading! Check your browser's Developer Tools:</p>
             
@@ -347,10 +185,10 @@ Click "Run Comparison" to see both loading patterns simultaneously!
                 </ol>
             </div>
             
-            <button onclick="analyzeCurrentPage()">Analyze This Page</button>
-            <button onclick="showNetworkTips()">Network Tips</button>
+            <button onclick="analyzeCurrentPage()" class="btn btn-primary">Analyze This Page</button>
+            <button onclick="showNetworkTips()" class="btn btn-secondary">Network Tips</button>
             
-            <div id="analysis-output" class="timeline comparison">
+            <div id="analysis-output" class="timeline">
 Click "Analyze This Page" to examine how this very page loaded its modules!
             </div>
         </div>
@@ -370,7 +208,7 @@ Click "Analyze This Page" to examine how this very page loaded its modules!
         
         // Update status
         document.getElementById('browser-status').innerHTML = `
-            <span style="background: #1a472a; color: #7ce38b; padding: 2px 6px; border-radius: 3px;">
+            <span class="status success">
                 ✅ Loaded
             </span>
         `;

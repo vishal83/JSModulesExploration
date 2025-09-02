@@ -3,57 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📦 Bundled Approach (Simulated)</title>
+    <title>📊 Bundling vs Native Comparison</title>
+    <link rel="stylesheet" href="/browser/css/design-system.css">
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 40px; 
-            background: #f0f0f0;
+        /* Additional styles specific to comparison page */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
         }
-        .comparison { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        .card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        
+        .comparison-card {
+            background: var(--gray-800);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+            color: var(--text-inverse);
+            border: 1px solid var(--gray-700);
         }
-        .bundled { border-left: 4px solid #ff6b6b; }
-        .native { border-left: 4px solid #4CAF50; }
-        pre { 
-            background: #f8f8f8; 
-            padding: 15px; 
-            border-radius: 4px; 
+        
+        .comparison-card.bundled {
+            border-left: 4px solid var(--accent-error);
+        }
+        
+        .comparison-card.native {
+            border-left: 4px solid var(--success);
+        }
+        
+        .comparison-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-500);
+            background: var(--gray-700);
+        }
+        
+        .comparison-card h2 {
+            color: var(--primary-300);
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .comparison-card p {
+            color: var(--gray-300);
+        }
+        
+        .network-info {
+            background: var(--primary-500);
+            color: var(--white);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+        }
+        
+        .code-block {
+            background: var(--gray-900);
+            border: 1px solid var(--gray-600);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            line-height: 1.6;
             overflow-x: auto;
-            font-size: 12px;
+            color: var(--gray-200);
         }
-        .network { 
-            background: #2196F3; 
-            color: white; 
-            padding: 10px; 
-            margin: 10px 0; 
-            border-radius: 4px;
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+            margin-top: var(--space-lg);
+        }
+        
+        @media (max-width: 568px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .pros, .cons {
+            padding: var(--space-md);
+            border-radius: var(--radius-lg);
+        }
+        
+        .pros {
+            background: rgba(5, 150, 105, 0.1);
+            border-left: 4px solid var(--success);
+        }
+        
+        .cons {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--error);
+        }
+        
+        .pros h4, .cons h4 {
+            margin-bottom: var(--space-md);
+            font-weight: 600;
+        }
+        
+        .pros h4 {
+            color: var(--success);
+        }
+        
+        .cons h4 {
+            color: var(--error);
+        }
+        
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .pros li, .cons li {
+            margin-bottom: var(--space-sm);
+            padding-left: var(--space-lg);
+            position: relative;
+        }
+        
+        .pros li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+        }
+        
+        .cons li::before {
+            content: '❌';
+            position: absolute;
+            left: 0;
+        }
+        
+        .interactive-demo {
+            background: var(--bg-glass);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            margin-top: var(--space-3xl);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+        
+        .interactive-demo h2 {
+            color: var(--text-inverse);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .interactive-demo p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--space-lg);
         }
     </style>
 </head>
 <body>
-    <h1>📦 Bundling vs 🌐 Native ES Modules</h1>
-    <p>This page demonstrates the difference between bundled and native module approaches.</p>
-    
-    <div class="comparison">
-        <div class="card bundled">
-            <h2>📦 Bundled Approach</h2>
-            <p><strong>What Webpack would do:</strong></p>
-            
-            <div class="network">
-                🌐 Network: 1 HTTP request<br/>
-                📦 bundle.js (all modules combined)
-            </div>
-            
-            <pre>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Bundling vs Native ES Modules</h1>
+            <p>Compare bundled approach (Webpack-style) with native browser ES modules</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/" class="nav-link">🏠 Home</a>
+            <a href="/esm-demo" class="nav-link">📦 ES Modules</a>
+            <a href="/dynamic-demo" class="nav-link">🔄 Dynamic Imports</a>
+            <a href="/bundled-demo" class="nav-link">📦 Bundled Demo</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank" class="nav-link">📚 GitHub</a>
+        </nav>
+        
+        <div class="comparison-grid">
+            <div class="comparison-card bundled">
+                <h2>📦 Bundled Approach</h2>
+                <p><strong>What build tools like Webpack do:</strong></p>
+                
+                <div class="network-info">
+                    🌐 Network: <strong>1 HTTP Request</strong><br/>
+                    📦 bundle.js (all modules combined)
+                </div>
+                
+                <div class="code-block">
 // webpack.config.js would create:
 // bundle.js containing:
 
@@ -69,39 +207,50 @@ const ROLES = { ADMIN: 'admin', USER: 'user' };
 // From config.js:
 const config = { environment: 'production', /* ... */ };
 
-// All bundled together in ONE file
-</pre>
-            
-            <p><strong>✅ Pros:</strong></p>
-            <ul>
-                <li>Fewer HTTP requests</li>
-                <li>Works in all browsers</li>
-                <li>Optimized for production</li>
-                <li>Dead code elimination</li>
-            </ul>
-            
-            <p><strong>❌ Cons:</strong></p>
-            <ul>
-                <li>Build step required</li>
-                <li>Download unused code</li>
-                <li>All-or-nothing caching</li>
-                <li>Slower development</li>
-            </ul>
-        </div>
-        
-        <div class="card native">
-            <h2>🌐 Native ES Modules (Your Approach)</h2>
-            <p><strong>What browsers do natively:</strong></p>
-            
-            <div class="network">
-                🌐 Network: 3 HTTP requests<br/>
-                📄 math-utils.js<br/>
-                📄 user-service.js<br/>
-                📄 config.js
+// 🔄 Webpack runtime code (module system)
+// 📦 All bundled together in ONE optimized file
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Advantages</h4>
+                        <ul>
+                            <li>Fewer HTTP requests</li>
+                            <li>Works in all browsers</li>
+                            <li>Optimized for production</li>
+                            <li>Dead code elimination</li>
+                            <li>Code minification</li>
+                            <li>Better compression ratios</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="cons">
+                        <h4>❌ Considerations</h4>
+                        <ul>
+                            <li>Build step required</li>
+                            <li>May download unused code</li>
+                            <li>All-or-nothing caching</li>
+                            <li>Slower development builds</li>
+                            <li>Complex tooling setup</li>
+                            <li>Bundle size management</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             
-            <pre>
-// Browser loads separately:
+            <div class="comparison-card native">
+                <h2>🌐 Native ES Modules</h2>
+                <p><strong>What modern browsers do natively:</strong></p>
+                
+                <div class="network-info">
+                    🌐 Network: <strong>Multiple HTTP Requests</strong><br/>
+                    📄 math-utils.js<br/>
+                    📄 user-service.js<br/>
+                    📄 config.js
+                </div>
+                
+                <div class="code-block">
+// Browser loads each file separately:
 
 // Request 1: math-utils.js
 export const add = (a, b) => a + b;
@@ -114,62 +263,207 @@ export const ROLES = { /* ... */ };
 // Request 3: config.js
 export const config = { /* ... */ };
 
-// Each file loaded independently
-</pre>
+// 🌐 No build step - browser handles module resolution
+// 📦 Each file loaded independently as needed
+                </div>
+                
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Advantages</h4>
+                        <ul>
+                            <li>No build step needed</li>
+                            <li>Load only what's imported</li>
+                            <li>Individual file caching</li>
+                            <li>Native browser feature</li>
+                            <li>True module boundaries</li>
+                            <li>Faster development</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="cons">
+                        <h4>❌ Considerations</h4>
+                        <ul>
+                            <li>More HTTP requests</li>
+                            <li>Modern browsers only</li>
+                            <li>Network latency impact</li>
+                            <li>HTTP/1.1 limitations</li>
+                            <li>No automatic optimization</li>
+                            <li>Requires CORS for cross-origin</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🚀 Performance Comparison</h2>
+            <p>Real-world factors to consider when choosing between approaches:</p>
             
-            <p><strong>✅ Pros:</strong></p>
-            <ul>
-                <li>No build step needed</li>
-                <li>Load only what's used</li>
-                <li>Individual file caching</li>
-                <li>Native browser feature</li>
-                <li>True module boundaries</li>
-            </ul>
+            <div class="cards">
+                <div class="card">
+                    <h2>🌐 Network Conditions</h2>
+                    <ul>
+                        <li><strong>HTTP/2:</strong> Native modules perform better with multiplexing</li>
+                        <li><strong>HTTP/1.1:</strong> Bundling reduces request overhead</li>
+                        <li><strong>High Latency:</strong> Fewer requests (bundling) is better</li>
+                        <li><strong>Low Latency:</strong> Native modules can be faster</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h2>📱 Application Size</h2>
+                    <ul>
+                        <li><strong>Small Apps:</strong> Native modules are simpler</li>
+                        <li><strong>Large Apps:</strong> Bundling provides better optimization</li>
+                        <li><strong>Multi-page Apps:</strong> Native modules enable better caching</li>
+                        <li><strong>SPAs:</strong> Bundling with code splitting is ideal</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h2>🎯 Development Context</h2>
+                    <ul>
+                        <li><strong>Prototyping:</strong> Native modules for simplicity</li>
+                        <li><strong>Production:</strong> Bundling for optimization</li>
+                        <li><strong>Legacy Browser Support:</strong> Bundling required</li>
+                        <li><strong>Modern-only:</strong> Native modules viable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="interactive-demo">
+            <h2>🧪 Live Demonstration</h2>
+            <p>Open your browser's <strong>Developer Tools → Network tab</strong> and click the button below to see native ES modules in action!</p>
             
-            <p><strong>❌ Cons:</strong></p>
-            <ul>
-                <li>More HTTP requests</li>
-                <li>Modern browsers only</li>
-                <li>Potentially slower initial load</li>
-            </ul>
+            <button onclick="demonstrateNativeModules()" class="btn btn-primary">🔍 Load Native ES Modules</button>
+            <button onclick="clearDemo()" class="btn btn-secondary">🗑️ Clear</button>
+            
+            <div id="demo-output" class="output" style="margin-top: var(--space-lg);">
+Click "Load Native ES Modules" to see how browsers load modules individually!
+
+💡 Watch the Network tab to see separate HTTP requests for each module file.
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>🎯 Which Approach Should You Choose?</h3>
+            <div class="comparison-grid" style="margin-top: var(--space-lg);">
+                <div>
+                    <h4>📦 Choose Bundling When:</h4>
+                    <ul>
+                        <li>Building production applications</li>
+                        <li>Supporting older browsers (IE11, etc.)</li>
+                        <li>Optimizing for HTTP/1.1</li>
+                        <li>Need code splitting and lazy loading</li>
+                        <li>Want automatic optimization (minification, tree shaking)</li>
+                        <li>Building complex applications with many dependencies</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>🌐 Choose Native Modules When:</h4>
+                    <ul>
+                        <li>Targeting modern browsers only</li>
+                        <li>Building simple applications or prototypes</li>
+                        <li>Want faster development with no build step</li>
+                        <li>Need true module isolation</li>
+                        <li>Working with HTTP/2 servers</li>
+                        <li>Prefer standards-based approach</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="margin-top: var(--space-xl); padding: var(--space-lg); background: rgba(59, 130, 246, 0.1); border-radius: var(--radius-lg); border-left: 4px solid var(--primary-500);">
+                <strong>💡 Pro Tip:</strong> Many modern applications use a hybrid approach - native ES modules during development for speed, and bundling for production with tools like Vite, which gives you the best of both worlds!
+            </div>
         </div>
     </div>
     
-    <div class="card">
-        <h2>🧪 Live Test - Open Developer Tools!</h2>
-        <p>Open your browser's Network tab and click the button below to see native ES modules in action:</p>
-        <button onclick="loadModules()">Load ES Modules</button>
-        <div id="output"></div>
-    </div>
-    
     <script type="module">
-        // This demonstrates NATIVE ES Modules (no bundling)
-        // Check Network tab - you'll see separate requests for each module!
+        // This page demonstrates NATIVE ES Modules - no bundling!
+        // Check Network tab to see individual module requests
         
-        window.loadModules = async function() {
-            const output = document.getElementById('output');
-            output.innerHTML = '🔄 Loading modules... (check Network tab!)';
+        console.log('🌐 Bundling Comparison page loaded with native ES modules!');
+        console.log('📊 Check Network tab to see how this page loaded its modules');
+        
+        window.demonstrateNativeModules = async function() {
+            const output = document.getElementById('demo-output');
+            output.className = 'output info';
+            output.textContent = '🔄 Loading modules individually... (Check Network tab!)';
             
             try {
+                console.log('🔍 Starting native ES module loading demonstration...');
+                console.time('Native Module Loading');
+                
                 // These create separate HTTP requests - visible in Network tab!
                 const mathModule = await import('/esm/math-utils.js');
-                const userModule = await import('/esm/user-service.js');
-                const configModule = await import('/esm/config.js');
+                console.log('📦 Loaded math-utils.js');
                 
-                output.innerHTML = `
-                    <h3>✅ Native ES Modules Loaded Successfully!</h3>
-                    <p><strong>Math Module:</strong> add(5, 3) = ${mathModule.add(5, 3)}</p>
-                    <p><strong>User Module:</strong> ${Object.keys(userModule.ROLES).length} roles available</p>
-                    <p><strong>Config Module:</strong> Environment = ${configModule.config.environment}</p>
-                    <p><strong>🔍 Check Network tab:</strong> You should see 3 separate .js file requests!</p>
-                `;
+                const userModule = await import('/esm/user-service.js');
+                console.log('📦 Loaded user-service.js');
+                
+                const configModule = await import('/esm/config.js');
+                console.log('📦 Loaded config.js');
+                
+                console.timeEnd('Native Module Loading');
+                
+                // Test the loaded modules
+                const mathResult = mathModule.add(5, 3);
+                const userService = new userModule.default();
+                const userCount = userService.getAllUsers().length;
+                const environment = configModule.config.environment;
+                
+                output.className = 'output success';
+                output.textContent = `✅ Native ES Modules Loaded Successfully!
+
+🔍 Network Analysis:
+  • Check the Network tab - you should see 3 separate .js requests
+  • Each module loaded independently
+  • Browser handled module resolution automatically
+
+📦 Module Results:
+  • Math Module: add(5, 3) = ${mathResult}
+  • User Module: ${userCount} users available, ${Object.keys(userModule.ROLES).length} roles
+  • Config Module: Environment = ${environment}
+
+⚡ Performance Notes:
+  • Total modules loaded: 3
+  • Each module cached separately
+  • Subsequent imports use browser cache
+  • No build step required!
+
+💡 Compare this to bundled approach:
+  • Bundled: 1 large request with all code
+  • Native: Multiple smaller requests as needed
+  • Each has its place depending on your needs!`;
+                
             } catch (error) {
-                output.innerHTML = `❌ Error: ${error.message}`;
+                output.className = 'output error';
+                output.textContent = `❌ Module loading failed: ${error.message}
+
+This might happen if:
+• Server is not running (start with: npm run serve)
+• Network issues preventing module loading
+• CORS restrictions (rare with same-origin requests)
+
+💡 Check browser console for more details.`;
+                console.error('Module loading error:', error);
             }
         };
         
-        console.log('🌐 This page uses NATIVE ES Modules - no bundling!');
-        console.log('📊 Check Network tab to see individual module requests');
+        window.clearDemo = function() {
+            const output = document.getElementById('demo-output');
+            output.className = 'output';
+            output.textContent = `Click "Load Native ES Modules" to see how browsers load modules individually!
+
+💡 Watch the Network tab to see separate HTTP requests for each module file.`;
+        };
+        
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📊 Bundling comparison page ready!');
+            console.log('🧪 Try the interactive demo to see native modules in action');
+        });
     </script>
 </body>
 </html>

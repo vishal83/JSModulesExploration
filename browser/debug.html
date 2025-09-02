@@ -3,212 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debug ES Modules</title>
-    <style>
-        body {
-            font-family: monospace;
-            margin: 40px;
-            background: #1a1a1a;
-            color: #ffffff;
-        }
-        .output {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            padding: 20px;
-            margin: 20px 0;
-            white-space: pre-wrap;
-            font-size: 14px;
-        }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .error {
-            color: #ff6b6b;
-            background: #2a1a1a;
-            border-color: #ff6b6b;
-        }
-        .success {
-            color: #4CAF50;
-            background: #1a2a1a;
-            border-color: #4CAF50;
-        }
-    </style>
+    <title>🔧 ES Modules Debug</title>
+    <link rel="stylesheet" href="/browser/css/design-system.css">
 </head>
 <body>
-    <h1>🔍 ES Modules Debug Page</h1>
-    <p>This page helps debug ES module loading issues.</p>
-    
-    <button onclick="testBasicImport()">Test Basic Import</button>
-    <button onclick="testAllModules()">Test All Modules</button>
-    <button onclick="clearOutput()">Clear Output</button>
-    
-    <div id="output" class="output">Ready to test ES modules...</div>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 ES Modules Debug Tool</h1>
+            <p>Debug and test ES module loading behavior in your browser</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/" class="nav-link">🏠 Home</a>
+            <a href="/esm-demo" class="nav-link">📦 ES Modules</a>
+            <a href="/loading-demo" class="nav-link">⚡ Loading Demo</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank" class="nav-link">📚 GitHub</a>
+        </nav>
+        
+        <div class="demo-section">
+            <h2>🚀 Module Loading Tests</h2>
+            <p>Test individual module loading and inspect the results:</p>
+            
+            <button onclick="testMathModule()" class="btn btn-primary">Test Math Module</button>
+            <button onclick="testUserModule()" class="btn btn-success">Test User Module</button>
+            <button onclick="testConfigModule()" class="btn btn-secondary">Test Config Module</button>
+            <button onclick="testAllModules()" class="btn btn-outline">Test All Modules</button>
+            
+            <div id="debug-output" class="output">
+🔧 Debug Tool Ready!
+
+Click any button above to test module loading and inspect the results.
+This tool will show detailed information about module imports and exports.
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>🔍 Browser Environment Analysis</h2>
+            <p>Analyze browser capabilities and module support:</p>
+            
+            <button onclick="analyzeBrowserCapabilities()" class="btn btn-primary">Analyze Browser</button>
+            <button onclick="testModuleFeatures()" class="btn btn-success">Test Module Features</button>
+            <button onclick="clearDebugOutput()" class="btn btn-secondary">Clear Output</button>
+            
+            <div id="browser-analysis" class="output">
+Click "Analyze Browser" to see detailed browser capability analysis!
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>🛠️ Debug Features</h3>
+            <ul>
+                <li><strong>Module Loading:</strong> Test individual module imports</li>
+                <li><strong>Browser Analysis:</strong> Check ES module support and capabilities</li>
+                <li><strong>Error Handling:</strong> See detailed error information</li>
+                <li><strong>Performance:</strong> Measure module loading times</li>
+                <li><strong>Network Inspection:</strong> Analyze HTTP requests</li>
+            </ul>
+        </div>
+    </div>
     
     <script type="module">
-        console.log('🔧 Debug script starting...');
+        console.log('🔧 Debug tool initialized');
         
-        // Test if the modules can be imported at all
-        let loadError = null;
-        let loadedModules = {};
-        
-        try {
-            console.log('📦 Attempting to import math-utils...');
-            const mathUtils = await import('/esm/math-utils.js');
-            loadedModules.math = mathUtils;
-            console.log('✅ math-utils loaded:', Object.keys(mathUtils));
+        window.testMathModule = async function() {
+            const output = document.getElementById('debug-output');
+            output.className = 'output info';
+            output.textContent = '🔧 Testing math module...';
             
-            console.log('📦 Attempting to import user-service...');
-            const userService = await import('/esm/user-service.js');
-            loadedModules.user = userService;
-            console.log('✅ user-service loaded:', Object.keys(userService));
-            
-            console.log('📦 Attempting to import config...');
-            const config = await import('/esm/config.js');
-            loadedModules.config = config;
-            console.log('✅ config loaded:', Object.keys(config));
-            
-            // Update the output
-            document.getElementById('output').className = 'output success';
-            document.getElementById('output').textContent = `✅ All modules loaded successfully!
+            try {
+                console.time('Math Module Load');
+                const mathModule = await import('/esm/math-utils.js');
+                console.timeEnd('Math Module Load');
+                
+                output.className = 'output success';
+                output.textContent = `✅ Math Module Debug Results:
 
-Math Utils: ${Object.keys(loadedModules.math).join(', ')}
-User Service: ${Object.keys(loadedModules.user).join(', ')}
-Config: ${Object.keys(loadedModules.config).join(', ')}
+🔍 Module Analysis:
+  • Import successful: ✅
+  • Module type: ${typeof mathModule}
+  • Exports found: ${Object.keys(mathModule).length}
+  • Export names: ${Object.keys(mathModule).join(', ')}
 
-🧮 Testing math functions:
-  add(5, 3) = ${loadedModules.math.add(5, 3)}
-  PI = ${loadedModules.math.PI}
+🧮 Function Tests:
+  • add(10, 5) = ${mathModule.add(10, 5)}
+  • multiply(3, 7) = ${mathModule.multiply(3, 7)}
+  • PI constant = ${mathModule.PI}
+  • E constant = ${mathModule.E}
 
-👥 Testing user service:
-  Default export: ${loadedModules.user.default.name}
-  ROLES: ${Object.keys(loadedModules.user.ROLES).join(', ')}
+🏗️ Constructor Tests:
+  • Calculator available: ${typeof mathModule.Calculator === 'function' ? '✅' : '❌'}
+  • Calculator instance: ${mathModule.Calculator ? new mathModule.Calculator('Debug').name : 'N/A'}
 
-⚙️ Testing config:
-  Environment: ${loadedModules.config.config.environment}
-  Version: ${loadedModules.config.getVersion()}
-
-✅ All imports successful! The modules are working correctly.`;
-            
-        } catch (error) {
-            console.error('❌ Module loading failed:', error);
-            loadError = error;
-            
-            document.getElementById('output').className = 'output error';
-            document.getElementById('output').textContent = `❌ Module loading failed!
-
-Error: ${error.message}
+📊 Performance:
+  • Check console for loading time
+  • Module cached: ${performance.getEntriesByName('/esm/math-utils.js').length > 0}`;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Math module test failed:
+                
+Error: ${error.name}
+Message: ${error.message}
 Stack: ${error.stack}
 
-🔍 Debugging info:
-- Check the browser console for more details
-- Verify the server is running on port 3000
-- Check Network tab for failed requests
-- Look for CORS errors`;
-        }
+Debug info:
+  • Module path: /esm/math-utils.js
+  • Import type: dynamic import()
+  • Browser support: ${typeof import !== 'undefined' ? '✅' : '❌'}`;
+            }
+        };
         
-        // Make test functions available globally
-        window.testBasicImport = async function() {
-            const output = document.getElementById('output');
-            output.className = 'output';
-            output.textContent = 'Testing basic import...';
+        window.testUserModule = async function() {
+            const output = document.getElementById('debug-output');
+            output.className = 'output info';
+            output.textContent = '🔧 Testing user service module...';
             
             try {
-                const mathModule = await import('/esm/math-utils.js');
-                const result = mathModule.add(10, 20);
+                const userModule = await import('/esm/user-service.js');
+                const userService = new userModule.default();
                 
                 output.className = 'output success';
-                output.textContent = `✅ Basic import test successful!
+                output.textContent = `✅ User Service Module Debug Results:
 
-Imported: math-utils.js
-Test: add(10, 20) = ${result}
-Available exports: ${Object.keys(mathModule).join(', ')}
-
-Import URL: ${import.meta.url}
-Base URL: ${window.location.origin}`;
+🔍 Module Analysis:
+  • Default export: ${typeof userModule.default}
+  • Named exports: ${Object.keys(userModule).filter(key => key !== 'default').join(', ')}
+  
+👥 Service Tests:
+  • UserService instantiated: ✅
+  • getAllUsers(): ${userService.getAllUsers().length} users
+  • Roles available: ${Object.values(userModule.ROLES).join(', ')}
+  
+✉️ Validation Tests:
+  • validateEmail('test@example.com'): ${userModule.validateEmail('test@example.com')}
+  • validateEmail('invalid'): ${userModule.validateEmail('invalid')}
+  
+📄 Formatting Tests:
+  • formatUser(): ${userModule.formatUser(userService.getAllUsers()[0])}`;
                 
             } catch (error) {
                 output.className = 'output error';
-                output.textContent = `❌ Basic import test failed!
-
-Error: ${error.name}: ${error.message}
-
-Debugging steps:
-1. Open browser console (F12)
-2. Check Network tab for failed requests
-3. Look for CORS policy errors
-4. Verify server is running`;
-                
-                console.error('Import test failed:', error);
+                output.textContent = `❌ User module test failed: ${error.message}`;
             }
         };
         
-        window.testAllModules = function() {
-            const output = document.getElementById('output');
-            
-            if (loadError) {
-                output.className = 'output error';
-                output.textContent = `❌ Initial module loading failed: ${loadError.message}`;
-                return;
-            }
+        window.testConfigModule = async function() {
+            const output = document.getElementById('debug-output');
+            output.className = 'output info';
+            output.textContent = '🔧 Testing configuration module...';
             
             try {
-                // Test math functions
-                const mathTest = loadedModules.math.add(15, 25);
-                const calc = new loadedModules.math.Calculator('Test Calculator');
-                const calcTest = calc.calculate('multiply', 6, 7);
-                
-                // Test user service
-                const userService = new loadedModules.user.default();
-                const users = userService.getAllUsers();
-                
-                // Test config
-                const environment = loadedModules.config.config.environment;
-                const version = loadedModules.config.getVersion();
+                const configModule = await import('/esm/config.js');
                 
                 output.className = 'output success';
-                output.textContent = `✅ All module tests passed!
+                output.textContent = `✅ Config Module Debug Results:
 
-🧮 Math Tests:
-  add(15, 25) = ${mathTest}
-  Calculator: ${calc.name}
-  multiply(6, 7) = ${calcTest}
-
-👥 User Service Tests:
-  Users count: ${users.length}
-  Sample user: ${users[0].name}
-  Email validation: ${loadedModules.user.validateEmail('test@example.com')}
-
-⚙️ Config Tests:
-  Environment: ${environment}
-  Version: ${version}
-  Is dev: ${loadedModules.config.isDevelopment()}
-
-🌐 Browser Info:
-  User Agent: ${navigator.userAgent.split(' ').slice(-2).join(' ')}
-  Module support: ✅ Native ES modules working`;
+🔍 Module Exports:
+  • Available exports: ${Object.keys(configModule).join(', ')}
+  
+⚙️ Configuration:
+  • Environment: ${configModule.config.environment}
+  • Version: ${configModule.getVersion()}
+  • Is Production: ${configModule.isProduction()}
+  • Is Development: ${configModule.isDevelopment()}
+  
+🗄️ Database Config:
+  • Host: ${configModule.config.database.host}
+  • Port: ${configModule.config.database.port}
+  • Name: ${configModule.config.database.name}
+  
+🌐 API Config:
+  • Base URL: ${configModule.config.api.baseUrl}
+  • Timeout: ${configModule.config.api.timeout}ms
+  
+🚀 Features:
+${Object.entries(configModule.config.features).map(([key, value]) => 
+  `  • ${key}: ${value ? '✅' : '❌'}`).join('\n')}`;
                 
             } catch (error) {
                 output.className = 'output error';
-                output.textContent = `❌ Module test failed: ${error.message}`;
-                console.error('Module test failed:', error);
+                output.textContent = `❌ Config module test failed: ${error.message}`;
             }
         };
         
-        window.clearOutput = function() {
-            document.getElementById('output').className = 'output';
-            document.getElementById('output').textContent = 'Ready to test ES modules...';
+        window.testAllModules = async function() {
+            const output = document.getElementById('debug-output');
+            output.className = 'output info';
+            output.textContent = '🔧 Testing all modules...';
+            
+            try {
+                console.time('All Modules Load');
+                
+                const [mathModule, userModule, configModule] = await Promise.all([
+                    import('/esm/math-utils.js'),
+                    import('/esm/user-service.js'),
+                    import('/esm/config.js')
+                ]);
+                
+                console.timeEnd('All Modules Load');
+                
+                output.className = 'output success';
+                output.textContent = `✅ All Modules Loaded Successfully!
+
+📊 Summary:
+  • Math Module: ${Object.keys(mathModule).length} exports
+  • User Module: ${Object.keys(userModule).length} exports  
+  • Config Module: ${Object.keys(configModule).length} exports
+  • Total load time: Check console
+  
+🧪 Quick Tests:
+  • Math: 2 + 3 = ${mathModule.add(2, 3)}
+  • User: ${new userModule.default().getAllUsers().length} users loaded
+  • Config: ${configModule.config.environment} environment
+  
+🚀 All systems operational!`;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Module loading failed: ${error.message}`;
+            }
         };
         
-        console.log('🔧 Debug script initialized. Modules loaded:', Object.keys(loadedModules));
+        window.analyzeBrowserCapabilities = function() {
+            const output = document.getElementById('browser-analysis');
+            
+            output.className = 'output info';
+            let analysis = '🔍 Browser Capability Analysis:\n\n';
+            
+            // ES Modules support
+            analysis += `📦 ES Modules Support:\n`;
+            analysis += `  • Native ES Modules: ${'noModule' in HTMLScriptElement.prototype ? '✅' : '❌'}\n`;
+            analysis += `  • Dynamic import(): ${typeof import === 'function' ? '✅' : '❌'}\n`;
+            analysis += `  • import.meta: ${typeof import.meta !== 'undefined' ? '✅' : '❌'}\n`;
+            analysis += `  • Top-level await: ✅ (in modules)\n\n`;
+            
+            // Browser info
+            analysis += `🌐 Browser Information:\n`;
+            analysis += `  • User Agent: ${navigator.userAgent.split(' ').slice(-2).join(' ')}\n`;
+            analysis += `  • Platform: ${navigator.platform}\n`;
+            analysis += `  • Language: ${navigator.language}\n`;
+            analysis += `  • Online: ${navigator.onLine ? '✅' : '❌'}\n\n`;
+            
+            // Network capabilities
+            analysis += `📡 Network Capabilities:\n`;
+            analysis += `  • Connection: ${navigator.connection ? navigator.connection.effectiveType : 'Unknown'}\n`;
+            analysis += `  • Service Workers: ${'serviceWorker' in navigator ? '✅' : '❌'}\n`;
+            analysis += `  • WebSockets: ${'WebSocket' in window ? '✅' : '❌'}\n\n`;
+            
+            // Performance API
+            analysis += `⚡ Performance API:\n`;
+            analysis += `  • Performance: ${typeof performance !== 'undefined' ? '✅' : '❌'}\n`;
+            analysis += `  • Resource Timing: ${typeof performance.getEntriesByType !== 'undefined' ? '✅' : '❌'}\n`;
+            analysis += `  • Navigation Timing: ${typeof performance.navigation !== 'undefined' ? '✅' : '❌'}\n\n`;
+            
+            // Current page info
+            analysis += `📄 Current Page:\n`;
+            analysis += `  • Protocol: ${window.location.protocol}\n`;
+            analysis += `  • Host: ${window.location.host}\n`;
+            analysis += `  • Module URL: ${import.meta.url}\n`;
+            
+            output.textContent = analysis;
+        };
+        
+        window.testModuleFeatures = async function() {
+            const output = document.getElementById('browser-analysis');
+            output.className = 'output info';
+            output.textContent = '🧪 Testing module features...';
+            
+            try {
+                let results = '🧪 Module Feature Test Results:\n\n';
+                
+                // Test import.meta
+                results += `🔗 import.meta:\n`;
+                results += `  • URL: ${import.meta.url}\n`;
+                results += `  • Available: ✅\n\n`;
+                
+                // Test dynamic imports
+                results += `⚡ Dynamic Import Test:\n`;
+                const startTime = performance.now();
+                await import('/esm/math-utils.js');
+                const endTime = performance.now();
+                results += `  • Dynamic import: ✅\n`;
+                results += `  • Load time: ${(endTime - startTime).toFixed(2)}ms\n\n`;
+                
+                // Test module caching
+                results += `🗄️ Module Caching:\n`;
+                const cached1 = await import('/esm/math-utils.js');
+                const cached2 = await import('/esm/math-utils.js');
+                results += `  • Same instance: ${cached1 === cached2 ? '✅' : '❌'}\n`;
+                results += `  • Caching works: ✅\n\n`;
+                
+                // Test error handling
+                results += `🛡️ Error Handling:\n`;
+                try {
+                    await import('/non-existent-module.js');
+                    results += `  • Error handling: ❌ (should have failed)\n`;
+                } catch {
+                    results += `  • Error handling: ✅\n`;
+                }
+                
+                output.className = 'output success';
+                output.textContent = results;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Feature test failed: ${error.message}`;
+            }
+        };
+        
+        window.clearDebugOutput = function() {
+            document.getElementById('debug-output').textContent = '🔧 Debug Tool Ready!\n\nClick any button above to test module loading and inspect the results.';
+            document.getElementById('debug-output').className = 'output';
+            
+            document.getElementById('browser-analysis').textContent = 'Click "Analyze Browser" to see detailed browser capability analysis!';
+            document.getElementById('browser-analysis').className = 'output';
+        };
+        
+        console.log('🔧 Debug script loaded and ready!');
     </script>
 </body>
 </html>

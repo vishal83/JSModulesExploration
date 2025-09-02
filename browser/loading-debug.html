@@ -3,137 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading Demo Debug</title>
-    <style>
-        body { 
-            font-family: monospace; 
-            background: #1a1a1a; 
-            color: white; 
-            padding: 20px; 
-        }
-        .output { 
-            background: #2a2a2a; 
-            padding: 20px; 
-            margin: 10px 0; 
-            border-radius: 5px; 
-            white-space: pre-wrap;
-        }
-        .error { border-left: 4px solid #ff6b6b; }
-        .success { border-left: 4px solid #4CAF50; }
-        button { 
-            background: #4CAF50; 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            margin: 10px 5px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-        }
-    </style>
+    <title>⚡ Loading Demo Debug</title>
+    <link rel="stylesheet" href="/browser/css/design-system.css">
 </head>
 <body>
-    <h1>🔍 Loading Demo Debug</h1>
-    <p>Testing if the loading demo functions can be loaded...</p>
-    
-    <button onclick="testImports()">Test Imports</button>
-    <button onclick="testFunctions()">Test Functions</button>
-    <button onclick="location.reload()">Reload Page</button>
-    
-    <div id="output" class="output">Ready to test...</div>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Loading Demo Debug Tool</h1>
+            <p>Debug and analyze module loading behavior patterns</p>
+        </div>
+        
+        <nav class="nav">
+            <a href="/" class="nav-link">🏠 Home</a>
+            <a href="/loading-demo" class="nav-link">⚡ Loading Demo</a>
+            <a href="/browser/debug.html" class="nav-link">🔧 Main Debug</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank" class="nav-link">📚 GitHub</a>
+        </nav>
+        
+        <div class="demo-section">
+            <h2>🔍 Loading Pattern Analysis</h2>
+            <p>Debug different module loading patterns and their behavior:</p>
+            
+            <button onclick="debugStaticImports()" class="btn btn-primary">Debug Static Imports</button>
+            <button onclick="debugDynamicImports()" class="btn btn-success">Debug Dynamic Imports</button>
+            <button onclick="debugLoadingOrder()" class="btn btn-secondary">Debug Loading Order</button>
+            
+            <div id="loading-debug-output" class="output">
+🔍 Loading Debug Tool Ready!
+
+Select a debug option above to analyze module loading patterns.
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2>📊 Performance Analysis</h2>
+            <p>Measure and compare loading performance:</p>
+            
+            <button onclick="measureSequentialLoading()" class="btn btn-primary">Measure Sequential</button>
+            <button onclick="measureParallelLoading()" class="btn btn-success">Measure Parallel</button>
+            <button onclick="compareLoadingMethods()" class="btn btn-outline">Compare Methods</button>
+            
+            <div id="performance-debug-output" class="output">
+📊 Performance analysis tools ready for testing module loading speeds.
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>🛠️ Debug Capabilities</h3>
+            <ul>
+                <li><strong>Static Import Analysis:</strong> Examine how static imports work</li>
+                <li><strong>Dynamic Import Debugging:</strong> Test runtime module loading</li>
+                <li><strong>Loading Order:</strong> Understand module execution order</li>
+                <li><strong>Performance Measurement:</strong> Compare loading strategies</li>
+                <li><strong>Network Analysis:</strong> Monitor HTTP requests</li>
+            </ul>
+        </div>
+    </div>
     
     <script type="module">
-        let importSuccess = false;
-        let functionsDefined = false;
+        console.log('⚡ Loading debug tool initialized');
         
-        console.log('🔧 Loading debug starting...');
-        
-        try {
-            console.log('📦 Testing imports...');
+        window.debugStaticImports = function() {
+            const output = document.getElementById('loading-debug-output');
+            output.className = 'output info';
             
-            // Test the same imports as loading-demo.html
-            const { add, multiply, Calculator } = await import('/esm/math-utils.js');
-            const { config, isProduction } = await import('/esm/config.js');
+            let debug = '📦 Static Imports Debug Analysis:\n\n';
+            debug += '🔍 This page uses static imports at the top level:\n';
+            debug += '  • All imports are hoisted\n';
+            debug += '  • Modules load in parallel\n';
+            debug += '  • Execution waits for all imports\n\n';
             
-            console.log('✅ Imports successful!');
-            importSuccess = true;
+            debug += '🌐 Network Behavior:\n';
+            debug += '  • Browser requests all modules immediately\n';
+            debug += '  • HTTP/2 multiplexing enables parallel downloads\n';
+            debug += '  • Module resolution happens at parse time\n\n';
             
-            // Test that functions work
-            const testAdd = add(5, 10);
-            const testEnv = config.environment;
+            debug += '⚡ Execution Order:\n';
+            debug += '  1. HTML parsed, <script type="module"> found\n';
+            debug += '  2. JavaScript parsed, imports discovered\n';
+            debug += '  3. All imports requested in parallel\n';
+            debug += '  4. Script execution waits for imports\n';
+            debug += '  5. Script body executes\n\n';
             
-            document.getElementById('output').className = 'output success';
-            document.getElementById('output').textContent = `✅ Import Test Successful!
-
-Math Utils Import: ✅
-  add(5, 10) = ${testAdd}
-
-Config Import: ✅  
-  Environment: ${testEnv}
-  Is Production: ${isProduction()}
-
-🎯 The imports are working! If loading-demo buttons don't work:
-1. Clear browser cache (Ctrl+Shift+Delete)
-2. Hard refresh (Ctrl+F5 or Cmd+Shift+R)
-3. Check browser console for errors
-
-Time to test: ${Date.now()}`;
+            debug += '💡 Check Network tab to see the actual requests!';
             
-        } catch (error) {
-            console.error('❌ Import failed:', error);
-            importSuccess = false;
-            
-            document.getElementById('output').className = 'output error';
-            document.getElementById('output').textContent = `❌ Import Test Failed!
-
-Error: ${error.message}
-Stack: ${error.stack}
-
-This means the same issue exists in loading-demo.html!
-
-🔧 Next steps:
-1. Check if config.js was properly updated
-2. Restart the server
-3. Clear browser cache`;
-        }
-        
-        // Test if we can define the same functions as loading-demo
-        try {
-            window.testSimulation = function() {
-                console.log('🧪 Test simulation function works!');
-                return 'Function defined and callable!';
-            };
-            functionsDefined = true;
-        } catch (error) {
-            console.error('Function definition failed:', error);
-        }
-        
-        // Global test functions
-        window.testImports = function() {
-            const output = document.getElementById('output');
-            output.className = importSuccess ? 'output success' : 'output error';
-            output.textContent = importSuccess 
-                ? '✅ Imports are working! The loading demo should work now.'
-                : '❌ Imports still failing. Check console for details.';
+            output.textContent = debug;
         };
         
-        window.testFunctions = function() {
-            const output = document.getElementById('output');
-            const canDefine = functionsDefined;
-            const testFunc = typeof window.testSimulation === 'function';
+        window.debugDynamicImports = async function() {
+            const output = document.getElementById('loading-debug-output');
+            output.className = 'output info';
+            output.textContent = '🔄 Testing dynamic imports...';
             
-            output.className = (canDefine && testFunc) ? 'output success' : 'output error';
-            output.textContent = `Function Definition Test:
-
-Can define functions: ${canDefine ? '✅' : '❌'}
-Test function exists: ${testFunc ? '✅' : '❌'}
-Test function result: ${testFunc ? window.testSimulation() : 'N/A'}
-
-${(canDefine && testFunc) 
-    ? '✅ Functions can be defined! Loading demo should work.' 
-    : '❌ Function definition issues detected.'}`;
+            try {
+                let debug = '🔄 Dynamic Imports Debug Results:\n\n';
+                
+                // Test dynamic import timing
+                console.time('Dynamic Import Test');
+                const startTime = performance.now();
+                
+                const mathModule = await import('/esm/math-utils.js');
+                
+                const endTime = performance.now();
+                console.timeEnd('Dynamic Import Test');
+                
+                debug += `⏱️ Timing Results:\n`;
+                debug += `  • Import duration: ${(endTime - startTime).toFixed(2)}ms\n`;
+                debug += `  • Module: /esm/math-utils.js\n`;
+                debug += `  • Exports loaded: ${Object.keys(mathModule).length}\n\n`;
+                
+                debug += `🔍 Dynamic Import Characteristics:\n`;
+                debug += `  • Returns a Promise\n`;
+                debug += `  • Loads at runtime (not parse time)\n`;
+                debug += `  • Can be conditional\n`;
+                debug += `  • Enables code splitting\n\n`;
+                
+                debug += `🧪 Test Results:\n`;
+                debug += `  • add(10, 5) = ${mathModule.add(10, 5)}\n`;
+                debug += `  • Module cached: ${performance.getEntriesByName('/esm/math-utils.js').length > 0}\n\n`;
+                
+                debug += `💡 Dynamic imports are perfect for:\n`;
+                debug += `  • Lazy loading\n`;
+                debug += `  • Conditional loading\n`;
+                debug += `  • Code splitting\n`;
+                debug += `  • Reducing initial bundle size`;
+                
+                output.className = 'output success';
+                output.textContent = debug;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Dynamic import debug failed: ${error.message}`;
+            }
         };
         
-        console.log('🔧 Debug initialized. Import success:', importSuccess);
+        window.debugLoadingOrder = async function() {
+            const output = document.getElementById('loading-debug-output');
+            output.className = 'output info';
+            output.textContent = '📋 Testing loading order...';
+            
+            try {
+                let debug = '📋 Module Loading Order Debug:\n\n';
+                
+                debug += '🔄 Loading modules in sequence to observe order:\n';
+                
+                console.log('📦 Loading math module...');
+                const mathStart = performance.now();
+                await import('/esm/math-utils.js');
+                const mathEnd = performance.now();
+                debug += `  1. Math module: ${(mathEnd - mathStart).toFixed(2)}ms\n`;
+                
+                console.log('👥 Loading user module...');
+                const userStart = performance.now();
+                await import('/esm/user-service.js');
+                const userEnd = performance.now();
+                debug += `  2. User module: ${(userEnd - userStart).toFixed(2)}ms\n`;
+                
+                console.log('⚙️ Loading config module...');
+                const configStart = performance.now();
+                await import('/esm/config.js');
+                const configEnd = performance.now();
+                debug += `  3. Config module: ${(configEnd - configStart).toFixed(2)}ms\n\n`;
+                
+                debug += '⚡ Parallel Loading Test:\n';
+                const parallelStart = performance.now();
+                await Promise.all([
+                    import('/esm/math-utils.js'),
+                    import('/esm/user-service.js'),
+                    import('/esm/config.js')
+                ]);
+                const parallelEnd = performance.now();
+                debug += `  • Parallel time: ${(parallelEnd - parallelStart).toFixed(2)}ms\n\n`;
+                
+                debug += '🔍 Key Observations:\n';
+                debug += '  • Second imports of same module are instant (cached)\n';
+                debug += '  • Parallel loading is faster than sequential\n';
+                debug += '  • Module instances are singletons\n';
+                debug += '  • Import order affects execution timing\n\n';
+                
+                debug += '💡 Check console for detailed loading logs!';
+                
+                output.className = 'output success';
+                output.textContent = debug;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Loading order debug failed: ${error.message}`;
+            }
+        };
+        
+        window.measureSequentialLoading = async function() {
+            const output = document.getElementById('performance-debug-output');
+            output.className = 'output info';
+            output.textContent = '📊 Measuring sequential loading...';
+            
+            try {
+                const modules = ['/esm/math-utils.js', '/esm/user-service.js', '/esm/config.js'];
+                
+                console.time('Sequential Loading Measurement');
+                const startTime = performance.now();
+                
+                const results = [];
+                for (const modulePath of modules) {
+                    const moduleStart = performance.now();
+                    await import(modulePath);
+                    const moduleEnd = performance.now();
+                    results.push({
+                        path: modulePath.split('/').pop(),
+                        time: moduleEnd - moduleStart
+                    });
+                }
+                
+                const totalTime = performance.now() - startTime;
+                console.timeEnd('Sequential Loading Measurement');
+                
+                let debug = '📊 Sequential Loading Performance:\n\n';
+                debug += '⏱️ Individual Module Times:\n';
+                results.forEach((result, index) => {
+                    debug += `  ${index + 1}. ${result.path}: ${result.time.toFixed(2)}ms\n`;
+                });
+                
+                debug += `\n🎯 Total Sequential Time: ${totalTime.toFixed(2)}ms\n\n`;
+                
+                debug += '🔍 Sequential Characteristics:\n';
+                debug += '  • Each module waits for previous to complete\n';
+                debug += '  • Network requests happen one at a time\n';
+                debug += '  • Predictable execution order\n';
+                debug += '  • Higher total latency\n';
+                debug += '  • Simpler error handling';
+                
+                output.className = 'output success';
+                output.textContent = debug;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Sequential measurement failed: ${error.message}`;
+            }
+        };
+        
+        window.measureParallelLoading = async function() {
+            const output = document.getElementById('performance-debug-output');
+            output.className = 'output info';
+            output.textContent = '📊 Measuring parallel loading...';
+            
+            try {
+                const modules = ['/esm/math-utils.js', '/esm/user-service.js', '/esm/config.js'];
+                
+                console.time('Parallel Loading Measurement');
+                const startTime = performance.now();
+                
+                await Promise.all(modules.map(path => import(path)));
+                
+                const totalTime = performance.now() - startTime;
+                console.timeEnd('Parallel Loading Measurement');
+                
+                let debug = '📊 Parallel Loading Performance:\n\n';
+                debug += `🎯 Total Parallel Time: ${totalTime.toFixed(2)}ms\n\n`;
+                
+                debug += '🔍 Parallel Characteristics:\n';
+                debug += '  • All modules load simultaneously\n';
+                debug += '  • Network requests happen concurrently\n';
+                debug += '  • Utilizes HTTP/2 multiplexing\n';
+                debug += '  • Lower total latency\n';
+                debug += '  • Requires Promise.all() coordination\n\n';
+                
+                debug += '🌐 Network Benefits:\n';
+                debug += '  • Reduces round-trip delays\n';
+                debug += '  • Better bandwidth utilization\n';
+                debug += '  • Ideal for independent modules\n';
+                debug += '  • Modern browser optimization';
+                
+                output.className = 'output success';
+                output.textContent = debug;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Parallel measurement failed: ${error.message}`;
+            }
+        };
+        
+        window.compareLoadingMethods = async function() {
+            const output = document.getElementById('performance-debug-output');
+            output.className = 'output info';
+            output.textContent = '📊 Comparing loading methods...';
+            
+            try {
+                const modules = ['/esm/math-utils.js', '/esm/user-service.js', '/esm/config.js'];
+                
+                // Sequential test
+                console.time('Sequential Comparison');
+                const seqStart = performance.now();
+                for (const path of modules) {
+                    await import(path);
+                }
+                const seqTime = performance.now() - seqStart;
+                console.timeEnd('Sequential Comparison');
+                
+                // Wait a bit to avoid interference
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Parallel test  
+                console.time('Parallel Comparison');
+                const parStart = performance.now();
+                await Promise.all(modules.map(path => import(path)));
+                const parTime = performance.now() - parStart;
+                console.timeEnd('Parallel Comparison');
+                
+                const improvement = ((seqTime - parTime) / seqTime * 100).toFixed(1);
+                
+                let debug = '📊 Loading Method Comparison Results:\n\n';
+                debug += '⚡ Performance Metrics:\n';
+                debug += `  • Sequential Loading: ${seqTime.toFixed(2)}ms\n`;
+                debug += `  • Parallel Loading: ${parTime.toFixed(2)}ms\n`;
+                debug += `  • Performance Gain: ${improvement}% faster\n\n`;
+                
+                debug += '🎯 Winner: ';
+                if (parTime < seqTime) {
+                    debug += 'Parallel Loading ✅\n\n';
+                } else {
+                    debug += 'Sequential Loading (unusual!) ⚠️\n\n';
+                }
+                
+                debug += '📈 Analysis:\n';
+                debug += `  • Time saved: ${(seqTime - parTime).toFixed(2)}ms\n`;
+                debug += `  • Efficiency ratio: ${(parTime / seqTime).toFixed(2)}x\n`;
+                debug += `  • Module count: ${modules.length}\n`;
+                debug += `  • Network optimization: ${parTime < seqTime ? 'Effective' : 'Limited'}\n\n`;
+                
+                debug += '💡 Recommendations:\n';
+                if (improvement > 20) {
+                    debug += '  • Use parallel loading for independent modules\n';
+                    debug += '  • Significant performance benefit observed\n';
+                } else {
+                    debug += '  • Limited performance difference\n';
+                    debug += '  • Either approach is acceptable\n';
+                }
+                debug += '  • Consider module dependencies\n';
+                debug += '  • Use sequential for dependent modules';
+                
+                output.className = 'output success';
+                output.textContent = debug;
+                
+            } catch (error) {
+                output.className = 'output error';
+                output.textContent = `❌ Comparison failed: ${error.message}`;
+            }
+        };
+        
+        console.log('⚡ Loading debug script loaded and ready!');
     </script>
 </body>
 </html>

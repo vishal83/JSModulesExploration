@@ -3,193 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📦 Bundled Code Demo</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 40px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-        }
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto;
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        .demo { 
-            background: rgba(0,0,0,0.3); 
-            padding: 20px; 
-            margin: 20px 0; 
-            border-radius: 8px;
-            border-left: 4px solid #ff6b6b;
-        }
-        .network-info {
-            background: #2196F3;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        button { 
-            background: #ff6b6b; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            margin: 10px 5px;
-            font-size: 16px;
-        }
-        button:hover { background: #ff5252; }
-        #output { 
-            background: rgba(0,0,0,0.5); 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin-top: 20px;
-            white-space: pre-wrap;
-            font-family: monospace;
-        }
-    </style>
+    <title>📦 Bundled Demo</title>
+    <link rel="stylesheet" href="/browser/css/design-system.css">
 </head>
 <body>
     <div class="container">
-        <h1>📦 Bundled Code Demo</h1>
-        <p>This page demonstrates how your modules would work if they were <strong>bundled</strong> (like with Webpack).</p>
-        
-        <div class="network-info">
-            <h3>🌐 Network Behavior - Bundled Approach</h3>
-            <p><strong>HTTP Requests:</strong> Only 2 requests total</p>
-            <ul>
-                <li>📄 bundled-demo.html (this page)</li>
-                <li>📦 webpack-example.js (ALL modules combined)</li>
-            </ul>
-            <p><strong>No separate requests</strong> for math-utils.js, user-service.js, or config.js!</p>
+        <div class="header">
+            <h1>📦 Bundled Approach Demo</h1>
+            <p>Experience how bundled JavaScript works compared to native ES modules</p>
         </div>
         
-        <div class="demo">
-            <h3>🔧 How Bundling Works</h3>
-            <p>Instead of loading modules separately, Webpack:</p>
-            <ol>
-                <li>Takes all your separate <code>.js</code> files</li>
-                <li>Combines them into one big file</li>
-                <li>Replaces <code>import/export</code> with its own module system</li>
-                <li>Browser downloads just the bundle</li>
-            </ol>
+        <nav class="nav">
+            <a href="/" class="nav-link">🏠 Home</a>
+            <a href="/esm-demo" class="nav-link">📦 ES Modules</a>
+            <a href="/bundling-comparison" class="nav-link">📊 Comparison</a>
+            <a href="https://github.com/vishal83/JSModulesExploration" target="_blank" class="nav-link">📚 GitHub</a>
+        </nav>
+        
+        <div class="demo-section">
+            <h2>📦 Bundled JavaScript in Action</h2>
+            <p>This demo loads all modules from a single bundled file (webpack-example.js):</p>
             
-            <button onclick="demonstrateBundled()">🧪 Test Bundled Modules</button>
-            <button onclick="compareBundledVsNative()">⚖️ Compare with Native</button>
+            <button onclick="testBundledModules()" class="btn btn-success">Test Bundled Modules</button>
+            <button onclick="analyzeBundlePerformance()" class="btn btn-primary">Analyze Performance</button>
+            <button onclick="compareBundleSize()" class="btn btn-secondary">Compare Bundle Size</button>
+            
+            <div id="bundle-output" class="output">
+Click "Test Bundled Modules" to see how all functionality loads from a single file!
+
+📦 Benefits of bundling:
+• Single HTTP request
+• Smaller total download size  
+• Better browser compatibility
+• Optimized and minified code
+            </div>
         </div>
         
-        <div id="output">Click a button to see bundled modules in action!</div>
+        <div class="demo-section">
+            <h2>🌐 Network Analysis</h2>
+            <p>Compare network behavior between bundled and native approaches:</p>
+            
+            <div class="cards">
+                <div class="card">
+                    <h2>📦 Bundled Approach</h2>
+                    <ul>
+                        <li><strong>Requests:</strong> 1 JavaScript file</li>
+                        <li><strong>Size:</strong> Larger but compressed</li>
+                        <li><strong>Caching:</strong> All-or-nothing</li>
+                        <li><strong>Loading:</strong> Everything at once</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h2>🧩 Native Modules</h2>
+                    <ul>
+                        <li><strong>Requests:</strong> Multiple files</li>
+                        <li><strong>Size:</strong> Only what's needed</li>
+                        <li><strong>Caching:</strong> Granular per module</li>
+                        <li><strong>Loading:</strong> Lazy loading possible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h3>🎯 When to Use Bundling vs Native</h3>
+            <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-lg);">
+                <div>
+                    <h4>📦 Use Bundling When:</h4>
+                    <ul>
+                        <li>Supporting older browsers</li>
+                        <li>Optimizing for HTTP/1.1</li>
+                        <li>Many small modules</li>
+                        <li>Need code optimization</li>
+                        <li>Building production apps</li>
+                        <li>Want faster initial loads</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>🧩 Use Native Modules When:</h4>
+                    <ul>
+                        <li>Modern browser targets only</li>
+                        <li>HTTP/2 is available</li>
+                        <li>Development/prototyping</li>
+                        <li>Want simple setup</li>
+                        <li>Large applications</li>
+                        <li>Need lazy loading</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <!-- This simulates a webpack bundle - all modules in one file -->
+
+    <!-- Load the bundled version -->
     <script src="/examples/webpack-example.js"></script>
     
     <script>
-        // This script uses the bundled modules (no import/export needed!)
+        // This script uses the bundled modules
+        console.log('📦 Bundled demo loaded!');
+        console.log('📊 Available from bundle:', typeof window.BundledModules);
         
-        function demonstrateBundled() {
-            const output = document.getElementById('output');
+        window.testBundledModules = function() {
+            const output = document.getElementById('bundle-output');
             
-            try {
-                // Using bundled modules - no imports needed, everything is global
-                const calc = new WebpackExample.Calculator('Bundled Calculator');
-                const userService = new WebpackExample.UserService();
+            if (typeof window.BundledModules !== 'undefined') {
+                const { mathUtils, userService, config } = window.BundledModules;
                 
-                const result = `📦 BUNDLED MODULES DEMO:
-
-🧮 Math Operations (from bundled math-utils):
-  add(15, 25) = ${WebpackExample.add(15, 25)}
-  
-📱 Calculator (from bundled math-utils):
-  Name: ${calc.name}
-  Test: 8 × 6 = ${calc.calculate('multiply', 8, 6)}
-
-👥 User Service (from bundled user-service):
-  Total users: ${userService.getAllUsers().length}
-  Available roles: ${Object.keys(WebpackExample.ROLES).join(', ')}
-
-⚙️ Config (from bundled config):
-  Environment: ${WebpackExample.config.environment}
-  Database: ${WebpackExample.config.database.name}
-
-🔑 KEY POINT:
-• All modules loaded in ONE HTTP request
-• No separate .js file requests
-• Everything bundled together
-• Works in ANY browser (even old ones)`;
+                // Test math utilities
+                const sum = mathUtils.add(10, 15);
+                const product = mathUtils.multiply(3, 7);
                 
-                output.textContent = result;
+                // Test user service
+                const users = userService.getAllUsers();
+                const newUser = userService.addUser({
+                    name: 'Bundled User',
+                    email: 'bundled@example.com',
+                    role: 'user'
+                });
                 
-            } catch (error) {
-                output.textContent = `❌ Error with bundled modules: ${error.message}`;
+                output.className = 'output success';
+                output.textContent = `✅ Bundled Modules Working!
+
+All modules loaded from single webpack-example.js file:
+
+🧮 Math Operations:
+  • add(10, 15) = ${sum}
+  • multiply(3, 7) = ${product}
+  • PI constant = ${mathUtils.PI}
+
+👥 User Service:
+  • Existing users: ${users.length}
+  • New user added: ${newUser.name}
+  • Total users now: ${userService.getAllUsers().length}
+
+⚙️ Configuration:
+  • Environment: ${config.environment}
+  • Version: ${config.version}
+  • Database: ${config.database.host}
+
+📦 Bundle Size: Single file contains all functionality
+🚀 Network Requests: Just 1 for all modules!`;
+                
+            } else {
+                output.className = 'output error';
+                output.textContent = '❌ Bundled modules not found. Check webpack-example.js';
             }
-        }
+        };
         
-        async function compareBundledVsNative() {
-            const output = document.getElementById('output');
-            output.textContent = '🔄 Loading native ES modules for comparison...';
+        window.analyzeBundlePerformance = function() {
+            const output = document.getElementById('bundle-output');
             
-            try {
-                // Try to load native ES modules for comparison
-                console.time('Native ES Modules Load Time');
-                const mathModule = await import('/esm/math-utils.js');
-                const userModule = await import('/esm/user-service.js');
-                const configModule = await import('/esm/config.js');
-                console.timeEnd('Native ES Modules Load Time');
-                
-                // Compare bundled vs native
-                const nativeCalc = new mathModule.Calculator('Native Calculator');
-                const nativeUserService = new userModule.default();
-                const bundledCalc = new WebpackExample.Calculator('Bundled Calculator');
-                const bundledUserService = new WebpackExample.UserService();
-                
-                const result = `⚖️ BUNDLED vs NATIVE ES MODULES:
-
-📊 PERFORMANCE:
-  Bundled: ⚡ Instant (already loaded)
-  Native:  🔄 ~100-300ms (separate HTTP requests)
-
-🌐 NETWORK REQUESTS:
-  Bundled: 1 request (webpack-example.js)
-  Native:  3 requests (math-utils.js, user-service.js, config.js)
-
-🧮 FUNCTIONALITY TEST:
-  Bundled calc: 10 + 5 = ${WebpackExample.add(10, 5)}
-  Native calc:  10 + 5 = ${mathModule.add(10, 5)}
-  
-👥 USERS COUNT:
-  Bundled service: ${bundledUserService.getAllUsers().length} users
-  Native service:  ${nativeUserService.getAllUsers().length} users
-
-🎯 RESULTS:
-✅ Both work identically
-✅ Bundled loads faster (fewer requests)
-✅ Native loads only what's needed
-✅ Native enables better caching
-
-Check Network tab to see the difference!`;
-                
-                output.textContent = result;
-                
-            } catch (error) {
-                output.textContent = `📦 Bundled vs Native Comparison:
-
-✅ BUNDLED WORKS: ${WebpackExample.add(7, 3)} (7+3)
-❌ NATIVE FAILED: ${error.message}
-
-This shows that bundled code works even when 
-native ES modules might have issues!`;
+            // Analyze performance using Resource Timing API
+            const resources = performance.getEntriesByType('resource');
+            const bundleResource = resources.find(r => r.name.includes('webpack-example.js'));
+            const cssResource = resources.find(r => r.name.includes('design-system.css'));
+            
+            let analysis = '📊 Bundle Performance Analysis:\n\n';
+            
+            if (bundleResource) {
+                analysis += `📦 Bundle (webpack-example.js):\n`;
+                analysis += `  • Size: ${(bundleResource.transferSize / 1024).toFixed(2)} KB\n`;
+                analysis += `  • Load time: ${bundleResource.duration.toFixed(2)}ms\n`;
+                analysis += `  • DNS lookup: ${(bundleResource.domainLookupEnd - bundleResource.domainLookupStart).toFixed(2)}ms\n`;
+                analysis += `  • Connect: ${(bundleResource.connectEnd - bundleResource.connectStart).toFixed(2)}ms\n`;
+                analysis += `  • Request: ${(bundleResource.responseStart - bundleResource.requestStart).toFixed(2)}ms\n`;
+                analysis += `  • Download: ${(bundleResource.responseEnd - bundleResource.responseStart).toFixed(2)}ms\n\n`;
             }
-        }
+            
+            if (cssResource) {
+                analysis += `🎨 CSS (design-system.css):\n`;
+                analysis += `  • Size: ${(cssResource.transferSize / 1024).toFixed(2)} KB\n`;
+                analysis += `  • Load time: ${cssResource.duration.toFixed(2)}ms\n\n`;
+            }
+            
+            // Compare with theoretical native modules
+            analysis += `📊 Bundle vs Native Comparison:\n\n`;
+            analysis += `Bundled Approach:\n`;
+            analysis += `  • HTTP Requests: 2 (bundle + CSS)\n`;
+            analysis += `  • Total Size: ~${((bundleResource?.transferSize || 0) + (cssResource?.transferSize || 0)) / 1024}KB\n`;
+            analysis += `  • Load Strategy: Everything at once\n`;
+            analysis += `  • Browser Compatibility: Excellent\n\n`;
+            
+            analysis += `Native Modules (estimated):\n`;
+            analysis += `  • HTTP Requests: ~5-7 (individual modules)\n`;
+            analysis += `  • Total Size: Similar or slightly larger\n`;
+            analysis += `  • Load Strategy: Parallel but multiple requests\n`;
+            analysis += `  • Browser Compatibility: Modern browsers only\n\n`;
+            
+            analysis += `🎯 Recommendation:\n`;
+            analysis += `For production apps, bundling is usually better due to:\n`;
+            analysis += `• Reduced HTTP overhead\n`;
+            analysis += `• Better compression ratios\n`;
+            analysis += `• Wider browser support\n`;
+            analysis += `• Optimized code (minification, tree shaking)`;
+            
+            output.className = 'output info';
+            output.textContent = analysis;
+        };
         
-        console.log('📦 This page demonstrates BUNDLED modules');
-        console.log('🌐 Check Network tab - you should see only 2 requests total!');
-        console.log('Compare with /esm-demo which makes separate requests for each module');
+        window.compareBundleSize = function() {
+            const output = document.getElementById('bundle-output');
+            
+            let comparison = '📏 Bundle Size Analysis:\n\n';
+            
+            // Get actual resource sizes
+            const resources = performance.getEntriesByType('resource');
+            const bundleResource = resources.find(r => r.name.includes('webpack-example.js'));
+            
+            if (bundleResource) {
+                const compressedSize = bundleResource.transferSize;
+                const uncompressedSize = bundleResource.decodedBodySize || bundleResource.transferSize;
+                const compressionRatio = ((1 - compressedSize / uncompressedSize) * 100).toFixed(1);
+                
+                comparison += `📦 Actual Bundle:\n`;
+                comparison += `  • Compressed: ${(compressedSize / 1024).toFixed(2)} KB\n`;
+                comparison += `  • Uncompressed: ${(uncompressedSize / 1024).toFixed(2)} KB\n`;
+                comparison += `  • Compression: ${compressionRatio}% smaller\n\n`;
+                
+                comparison += `🧮 What's in the bundle:\n`;
+                comparison += `  • Math utilities (~2KB)\n`;
+                comparison += `  • User service (~3KB)\n`;
+                comparison += `  • Configuration (~1KB)\n`;
+                comparison += `  • Webpack runtime (~2KB)\n`;
+                comparison += `  • Total bundled: ~8KB\n\n`;
+                
+                comparison += `🔄 Compared to individual files:\n`;
+                comparison += `  • math-utils.js: ~2KB\n`;
+                comparison += `  • user-service.js: ~3KB\n`;
+                comparison += `  • config.js: ~1KB\n`;
+                comparison += `  • Total individual: ~6KB\n\n`;
+                
+                comparison += `📊 Bundle overhead:\n`;
+                comparison += `  • Webpack runtime: ~2KB\n`;
+                comparison += `  • Module wrapper code: ~500B\n`;
+                comparison += `  • Total overhead: ~2.5KB\n\n`;
+                
+                comparison += `✅ Bundle advantages:\n`;
+                comparison += `• Gzip compression works better on larger files\n`;
+                comparison += `• Eliminates HTTP request overhead\n`;
+                comparison += `• Dead code elimination possible\n`;
+                comparison += `• Code splitting for large apps`;
+            } else {
+                comparison += '⚠️ Bundle resource not found in performance data.\n';
+                comparison += 'This might be due to caching or timing.';
+            }
+            
+            output.className = 'output info';
+            output.textContent = comparison;
+        };
+        
+        // Run initial analysis
+        setTimeout(() => {
+            if (typeof window.BundledModules !== 'undefined') {
+                console.log('📦 Bundle loaded successfully!');
+                console.log('🧮 Math utils available:', typeof window.BundledModules.mathUtils.add === 'function');
+                console.log('👥 User service available:', typeof window.BundledModules.userService.getAllUsers === 'function');
+            } else {
+                console.warn('⚠️ Bundle not loaded or incomplete');
+            }
+        }, 100);
     </script>
 </body>
 </html>
