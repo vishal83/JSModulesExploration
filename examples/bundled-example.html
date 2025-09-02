@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 Bundled Approach (Simulated)</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background: #f0f0f0;
+        }
+        .comparison { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .bundled { border-left: 4px solid #ff6b6b; }
+        .native { border-left: 4px solid #4CAF50; }
+        pre { 
+            background: #f8f8f8; 
+            padding: 15px; 
+            border-radius: 4px; 
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .network { 
+            background: #2196F3; 
+            color: white; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 Bundling vs 🌐 Native ES Modules</h1>
+    <p>This page demonstrates the difference between bundled and native module approaches.</p>
+    
+    <div class="comparison">
+        <div class="card bundled">
+            <h2>📦 Bundled Approach</h2>
+            <p><strong>What Webpack would do:</strong></p>
+            
+            <div class="network">
+                🌐 Network: 1 HTTP request<br/>
+                📦 bundle.js (all modules combined)
+            </div>
+            
+            <pre>
+// webpack.config.js would create:
+// bundle.js containing:
+
+// From math-utils.js:
+function add(a, b) { return a + b; }
+function multiply(a, b) { return a * b; }
+class Calculator { /* ... */ }
+
+// From user-service.js:
+class UserService { /* ... */ }
+const ROLES = { ADMIN: 'admin', USER: 'user' };
+
+// From config.js:
+const config = { environment: 'production', /* ... */ };
+
+// All bundled together in ONE file
+</pre>
+            
+            <p><strong>✅ Pros:</strong></p>
+            <ul>
+                <li>Fewer HTTP requests</li>
+                <li>Works in all browsers</li>
+                <li>Optimized for production</li>
+                <li>Dead code elimination</li>
+            </ul>
+            
+            <p><strong>❌ Cons:</strong></p>
+            <ul>
+                <li>Build step required</li>
+                <li>Download unused code</li>
+                <li>All-or-nothing caching</li>
+                <li>Slower development</li>
+            </ul>
+        </div>
+        
+        <div class="card native">
+            <h2>🌐 Native ES Modules (Your Approach)</h2>
+            <p><strong>What browsers do natively:</strong></p>
+            
+            <div class="network">
+                🌐 Network: 3 HTTP requests<br/>
+                📄 math-utils.js<br/>
+                📄 user-service.js<br/>
+                📄 config.js
+            </div>
+            
+            <pre>
+// Browser loads separately:
+
+// Request 1: math-utils.js
+export const add = (a, b) => a + b;
+export class Calculator { /* ... */ }
+
+// Request 2: user-service.js  
+export default class UserService { /* ... */ }
+export const ROLES = { /* ... */ };
+
+// Request 3: config.js
+export const config = { /* ... */ };
+
+// Each file loaded independently
+</pre>
+            
+            <p><strong>✅ Pros:</strong></p>
+            <ul>
+                <li>No build step needed</li>
+                <li>Load only what's used</li>
+                <li>Individual file caching</li>
+                <li>Native browser feature</li>
+                <li>True module boundaries</li>
+            </ul>
+            
+            <p><strong>❌ Cons:</strong></p>
+            <ul>
+                <li>More HTTP requests</li>
+                <li>Modern browsers only</li>
+                <li>Potentially slower initial load</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🧪 Live Test - Open Developer Tools!</h2>
+        <p>Open your browser's Network tab and click the button below to see native ES modules in action:</p>
+        <button onclick="loadModules()">Load ES Modules</button>
+        <div id="output"></div>
+    </div>
+    
+    <script type="module">
+        // This demonstrates NATIVE ES Modules (no bundling)
+        // Check Network tab - you'll see separate requests for each module!
+        
+        window.loadModules = async function() {
+            const output = document.getElementById('output');
+            output.innerHTML = '🔄 Loading modules... (check Network tab!)';
+            
+            try {
+                // These create separate HTTP requests - visible in Network tab!
+                const mathModule = await import('/esm/math-utils.js');
+                const userModule = await import('/esm/user-service.js');
+                const configModule = await import('/esm/config.js');
+                
+                output.innerHTML = `
+                    <h3>✅ Native ES Modules Loaded Successfully!</h3>
+                    <p><strong>Math Module:</strong> add(5, 3) = ${mathModule.add(5, 3)}</p>
+                    <p><strong>User Module:</strong> ${Object.keys(userModule.ROLES).length} roles available</p>
+                    <p><strong>Config Module:</strong> Environment = ${configModule.config.environment}</p>
+                    <p><strong>🔍 Check Network tab:</strong> You should see 3 separate .js file requests!</p>
+                `;
+            } catch (error) {
+                output.innerHTML = `❌ Error: ${error.message}`;
+            }
+        };
+        
+        console.log('🌐 This page uses NATIVE ES Modules - no bundling!');
+        console.log('📊 Check Network tab to see individual module requests');
+    </script>
+</body>
+</html>

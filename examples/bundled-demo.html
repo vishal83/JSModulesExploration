@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 Bundled Code Demo</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .demo { 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+        }
+        .network-info {
+            background: #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button { 
+            background: #ff6b6b; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover { background: #ff5252; }
+        #output { 
+            background: rgba(0,0,0,0.5); 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Bundled Code Demo</h1>
+        <p>This page demonstrates how your modules would work if they were <strong>bundled</strong> (like with Webpack).</p>
+        
+        <div class="network-info">
+            <h3>🌐 Network Behavior - Bundled Approach</h3>
+            <p><strong>HTTP Requests:</strong> Only 2 requests total</p>
+            <ul>
+                <li>📄 bundled-demo.html (this page)</li>
+                <li>📦 webpack-example.js (ALL modules combined)</li>
+            </ul>
+            <p><strong>No separate requests</strong> for math-utils.js, user-service.js, or config.js!</p>
+        </div>
+        
+        <div class="demo">
+            <h3>🔧 How Bundling Works</h3>
+            <p>Instead of loading modules separately, Webpack:</p>
+            <ol>
+                <li>Takes all your separate <code>.js</code> files</li>
+                <li>Combines them into one big file</li>
+                <li>Replaces <code>import/export</code> with its own module system</li>
+                <li>Browser downloads just the bundle</li>
+            </ol>
+            
+            <button onclick="demonstrateBundled()">🧪 Test Bundled Modules</button>
+            <button onclick="compareBundledVsNative()">⚖️ Compare with Native</button>
+        </div>
+        
+        <div id="output">Click a button to see bundled modules in action!</div>
+    </div>
+    
+    <!-- This simulates a webpack bundle - all modules in one file -->
+    <script src="/examples/webpack-example.js"></script>
+    
+    <script>
+        // This script uses the bundled modules (no import/export needed!)
+        
+        function demonstrateBundled() {
+            const output = document.getElementById('output');
+            
+            try {
+                // Using bundled modules - no imports needed, everything is global
+                const calc = new WebpackExample.Calculator('Bundled Calculator');
+                const userService = new WebpackExample.UserService();
+                
+                const result = `📦 BUNDLED MODULES DEMO:
+
+🧮 Math Operations (from bundled math-utils):
+  add(15, 25) = ${WebpackExample.add(15, 25)}
+  
+📱 Calculator (from bundled math-utils):
+  Name: ${calc.name}
+  Test: 8 × 6 = ${calc.calculate('multiply', 8, 6)}
+
+👥 User Service (from bundled user-service):
+  Total users: ${userService.getAllUsers().length}
+  Available roles: ${Object.keys(WebpackExample.ROLES).join(', ')}
+
+⚙️ Config (from bundled config):
+  Environment: ${WebpackExample.config.environment}
+  Database: ${WebpackExample.config.database.name}
+
+🔑 KEY POINT:
+• All modules loaded in ONE HTTP request
+• No separate .js file requests
+• Everything bundled together
+• Works in ANY browser (even old ones)`;
+                
+                output.textContent = result;
+                
+            } catch (error) {
+                output.textContent = `❌ Error with bundled modules: ${error.message}`;
+            }
+        }
+        
+        async function compareBundledVsNative() {
+            const output = document.getElementById('output');
+            output.textContent = '🔄 Loading native ES modules for comparison...';
+            
+            try {
+                // Try to load native ES modules for comparison
+                console.time('Native ES Modules Load Time');
+                const mathModule = await import('/esm/math-utils.js');
+                const userModule = await import('/esm/user-service.js');
+                const configModule = await import('/esm/config.js');
+                console.timeEnd('Native ES Modules Load Time');
+                
+                // Compare bundled vs native
+                const nativeCalc = new mathModule.Calculator('Native Calculator');
+                const nativeUserService = new userModule.default();
+                const bundledCalc = new WebpackExample.Calculator('Bundled Calculator');
+                const bundledUserService = new WebpackExample.UserService();
+                
+                const result = `⚖️ BUNDLED vs NATIVE ES MODULES:
+
+📊 PERFORMANCE:
+  Bundled: ⚡ Instant (already loaded)
+  Native:  🔄 ~100-300ms (separate HTTP requests)
+
+🌐 NETWORK REQUESTS:
+  Bundled: 1 request (webpack-example.js)
+  Native:  3 requests (math-utils.js, user-service.js, config.js)
+
+🧮 FUNCTIONALITY TEST:
+  Bundled calc: 10 + 5 = ${WebpackExample.add(10, 5)}
+  Native calc:  10 + 5 = ${mathModule.add(10, 5)}
+  
+👥 USERS COUNT:
+  Bundled service: ${bundledUserService.getAllUsers().length} users
+  Native service:  ${nativeUserService.getAllUsers().length} users
+
+🎯 RESULTS:
+✅ Both work identically
+✅ Bundled loads faster (fewer requests)
+✅ Native loads only what's needed
+✅ Native enables better caching
+
+Check Network tab to see the difference!`;
+                
+                output.textContent = result;
+                
+            } catch (error) {
+                output.textContent = `📦 Bundled vs Native Comparison:
+
+✅ BUNDLED WORKS: ${WebpackExample.add(7, 3)} (7+3)
+❌ NATIVE FAILED: ${error.message}
+
+This shows that bundled code works even when 
+native ES modules might have issues!`;
+            }
+        }
+        
+        console.log('📦 This page demonstrates BUNDLED modules');
+        console.log('🌐 Check Network tab - you should see only 2 requests total!');
+        console.log('Compare with /esm-demo which makes separate requests for each module');
+    </script>
+</body>
+</html>

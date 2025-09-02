@@ -29,7 +29,9 @@ const routes = {
     '/esm-demo': '/browser/esm-demo.html',
     '/loading-demo': '/browser/loading-demo.html',
     '/dynamic-demo': '/browser/dynamic-demo.html',
-    '/interop-demo': '/browser/interop-demo.html'
+    '/interop-demo': '/browser/interop-demo.html',
+    '/bundling-comparison': '/examples/bundled-example.html',
+    '/bundled-demo': '/examples/bundled-demo.html'
 };
 
 const server = http.createServer((req, res) => {
@@ -187,6 +189,7 @@ server.listen(PORT, () => {
    • ES Modules:     http://localhost:${PORT}/esm-demo
    • Loading Demo:   http://localhost:${PORT}/loading-demo
    • Dynamic Demo:   http://localhost:${PORT}/dynamic-demo
+   • Bundling Comparison: http://localhost:${PORT}/bundling-comparison
    • Browser Tests:  http://localhost:${PORT}/browser
 
 📁 File serving from: ${__dirname}
