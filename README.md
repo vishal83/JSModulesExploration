@@ -2,6 +2,12 @@
 
 A comprehensive hands-on exploration of CommonJS and ES Modules (ESM) in JavaScript, designed to help you understand the differences, similarities, and interoperability between these two module systems.
 
+## 🌐 Live Demo
+
+**[🚀 Try the Interactive Demo →](https://vishal83.github.io/JSModulesExploration/)**
+
+Experience ES Modules running natively in your browser with interactive examples, loading visualizations, and comprehensive demonstrations.
+
 ## 🎯 What You'll Learn
 
 - **CommonJS**: The traditional Node.js module system with `require()` and `module.exports`

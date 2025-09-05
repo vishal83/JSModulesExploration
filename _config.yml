@@ -1,0 +1,31 @@
+# GitHub Pages Configuration
+title: JavaScript Modules Exploration
+description: A comprehensive hands-on exploration of CommonJS and ES Modules
+url: https://vishal83.github.io
+baseurl: /JSModulesExploration
+
+# Include additional file types for GitHub Pages
+include:
+  - _*
+  - .nojekyll
+
+# Serve additional file types correctly
+plugins:
+  - jekyll-github-metadata
+
+# Ensure ES modules (.mjs) and other assets are served correctly
+defaults:
+  - scope:
+      path: "**/*.mjs"
+    values:
+      layout: null
+
+# Exclude server-side files from Jekyll processing
+exclude:
+  - server.js
+  - package.json
+  - package-lock.json
+  - node_modules/
+  - test/
+  - "*.cjs"
+  - demo-loading/
